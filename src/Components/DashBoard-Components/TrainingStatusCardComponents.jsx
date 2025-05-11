@@ -1,4 +1,3 @@
-import React from "react";
 import * as Icons from "lucide-react"; // import all icons
 
 const TrainingStatusCardComponents = ({
@@ -23,7 +22,10 @@ const TrainingStatusCardComponents = ({
           <Icon style={{ color: color }} className="w-6 h-6 text-blue-500" />
         </div>
         <div className="rating">
-          <h3 className="text-[32px] md:text-[50px]"> {rating} </h3>
+          <h3 className="text-[32px] text-[#2c405a] md:text-[50px]">
+            {" "}
+            {rating}{" "}
+          </h3>
         </div>
       </div>
       <div

@@ -7,34 +7,34 @@ const TrainingStatusCard = () => {
       heading: "Evaluation",
       rating: "3",
       iconName: 'CircleCheck',
-      backgroundColor: "yellow",
-      color : "red"
+      backgroundColor: "#faca00",
+      color : "#faca00"
     },
     {
-        heading: "Evaluation",
-        rating: "3",
+        heading: "CX SCORE %",
+        rating: "40",
         iconName: 'Star',
-        backgroundColor: "blue",
-        color : "blue"
+        backgroundColor: "#03d0dd",
+        color : "#03d0dd"
       },
       {
-        heading: "Evaluation",
-        rating: "3",
+        heading: "PASS %",
+        rating: "100",
         iconName: 'ThumbsUp',
-        backgroundColor: "green",
-        color : "green"
+        backgroundColor: "#3bda8b",
+        color : "#3bda8b"
       },
       {
-        heading: "Evaluation",
-        rating: "3",
+        heading: "AUTO FAIL %",
+        rating: "0",
         iconName: 'ThumbsDown',
-        backgroundColor: "red",
-        color : "red"
+        backgroundColor: "#ee5e56",
+        color : "#ee5e56"
       },
   ];
 
   return (
-    <div className="  bg-white shadow-xl flex w-full px-32  border border-[#c7cfd6]  md:mb-2 ">
+    <div className=" bg-white shadow-xl flex w-full px-32  border border-[#c7cfd6]  md:mb-2 ">
       {card.map((c ,index) => (
         <TrainingStatusCardComponents
           heading={c.heading}
