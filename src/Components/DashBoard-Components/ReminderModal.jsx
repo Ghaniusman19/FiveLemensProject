@@ -32,6 +32,7 @@ const ReminderModal = ({ show, onClose, onSubmit }) => {
             placeholder="Enter name"
             className="w-full border border-gray-300 p-2 rounded"
             required
+            autoComplete="off"
           />
           <label className="text-[gray]" htmlFor="description">
             Description :
@@ -40,9 +41,11 @@ const ReminderModal = ({ show, onClose, onSubmit }) => {
             type="textarea"
             name="description"
             id="description"
+            maxLength={20}
             placeholder="Enter Description"
             className="w-full border border-gray-300 p-2 rounded"
             required
+            autoComplete="off"
           ></textarea>
           <label className="text-[gray]" htmlFor="date">
             Date :
