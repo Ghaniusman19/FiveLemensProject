@@ -1,5 +1,5 @@
-const ReminderModal = ({ show, onClose, onSubmit }) => {
-  if (!show) return null;
+const ViewProfileModal = ({ showProfile, onClose, onSubmit }) => {
+  if (!showProfile) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,11 +17,11 @@ const ReminderModal = ({ show, onClose, onSubmit }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-xl w-96">
-        <h2 className="text-xl font-semibold mb-4">Add Reminder</h2>
+        <h2 className="text-xl font-semibold mb-4">Profile</h2>
         <hr />
         <form onSubmit={handleSubmit} className="space-y-2">
           <label className="text-[gray]" htmlFor="name">
-            NAME :
+            Profile
           </label>
           <input
             type="text"
@@ -77,4 +77,4 @@ const ReminderModal = ({ show, onClose, onSubmit }) => {
   );
 };
 
-export default ReminderModal;
+export default ViewProfileModal;

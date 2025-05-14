@@ -4,16 +4,16 @@ import ProfileMenu from "./DashBoard-Components/ProfileMenu";
 const Header = () => {
   const [profileMenu, setprofileMenu] = useState(false);
   const profileMenuRef = useRef(null);
-const toggleProfile = () => {
-  setprofileMenu((open) => !open)
-}
+  const toggleProfile = () => {
+    setprofileMenu((open) => !open);
+  };
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
         profileMenuRef.current &&
         !profileMenuRef.current.contains(event.target)
       ) {
-         setprofileMenu(false)// ✅ call close handler if clicked outside
+        setprofileMenu(false); // ✅ call close handler if clicked outside
       }
     };
 
@@ -37,13 +37,13 @@ const toggleProfile = () => {
             </div>
             <div
               className="user-img rounder-full relative w-10 h-10"
-              onClick={toggleProfile} 
+              onClick={toggleProfile}
             >
               <img src="src/assets/lester-tester-img.png" alt="user Image " />
               {profileMenu && (
                 <div
                   ref={profileMenuRef}
-                  className="profile-menu absolute shadow-xl z-10 top-12 right-0 bg-white rounded"
+                  className="profile-menu absolute shadow-xl z-10 top-12 right-0  bg-white rounded"
                 >
                   <ProfileMenu />
                 </div>

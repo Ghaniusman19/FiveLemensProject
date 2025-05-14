@@ -1,4 +1,3 @@
-import React from "react";
 import Container from "../Components/Container";
 import TotalTraining from "../Components/DashBoard-Components/TotalTraining";
 import TrainingStatusCard from "../Components/DashBoard-Components/TrainingStatusCard";
@@ -9,11 +8,10 @@ const DashBoard = () => {
       <Container>
         <div className=" flex   gap-2">
           <div>
-            {" "}
-            <TotalTraining />{" "}
+            <TotalTraining />
           </div>
           <div>
-            {" "}
+         
             <TrainingStatusCard />
             <Reminder />
           </div>

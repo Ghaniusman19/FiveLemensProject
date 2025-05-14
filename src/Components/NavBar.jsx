@@ -8,7 +8,7 @@ const NavBar = () => {
   const [reportingDropdown, setreportingDropdown] = useState(false);
 
   return (
-    <div className="navbar min-h-16 flex items-center shadow-xl">
+    <div className="navbar min-h-16 flex items-center shadow-xl mb-10 bg-white">
       <Container>
         <nav>
           <ul className="nav-list flex items-center gap-3">
