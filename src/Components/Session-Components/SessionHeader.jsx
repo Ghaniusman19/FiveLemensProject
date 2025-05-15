@@ -7,6 +7,23 @@ const SessionHeader = () => {
     const storedArray = localStorage.getItem("allFormData");
     return storedArray ? JSON.parse(storedArray) : [];
   });
+  const [searchItem, setSearchItem] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState(allFormData);
+  const handleInputChange = (e) => {
+    const searchTerm = e.target.value;
+    setSearchItem(searchTerm);
+    const filteredItems = allFormData.filter((allFormData) =>
+      allFormData.groups.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredUsers(filteredItems);
+  };
+  // allFormData.filter((item) =>
+  //   Object.values(item).some(
+  //     (value) =>
+  //       typeof value === "string" &&
+  //       value.toLowerCase().includes(searchTerm.toLowerCase())
+  //   )
+  // );
   useEffect(() => {
     localStorage.setItem("My Data", JSON.stringify(allFormData));
   }, [allFormData]);
@@ -40,6 +57,8 @@ const SessionHeader = () => {
                   type="text"
                   className="border  rounded-lg h-9 focus:outline-gray-300 px-3 py-1 text-gray-600"
                   placeholder="search"
+                  value={searchItem}
+                  onChange={handleInputChange}
                 />
               </div>
             </form>
@@ -70,36 +89,47 @@ const SessionHeader = () => {
       <div>
         {allFormData.length > 0 && (
           <ul className="">
+            <div className="flex justify-between p-2">
+              <h3 className="font-bold">User</h3>
+              <h3 className="font-bold">Coaching Form</h3>
+              <h3 className="font-bold">Primary</h3>
+              <h3 className="font-bold">Coached On</h3>
+              <h3></h3>
+            </div>
             {allFormData.map((data, index) => (
-              <div className=" flex mb-4 gap-4 ">
-                <li className="flex justify-between w-full" key={data.index}>
+              <div className=" flex mb-2 gap-4">
+                <li
+                  className="flex justify-between w-full bg-gray-50 border border-gray-300 px-2 "
+                  key={data.index}
+                >
                   <div>
-                    <h3 className="font-bold">User</h3>
                     <p> {data.groups}</p>
                   </div>
 
                   <div>
-                    <h3 className="font-bold">Coaching Form</h3>
                     <p> {data.teams}</p>
                   </div>
                   <div>
-                    <h3 className="font-bold">Primary</h3>
                     <p> {data.users}</p>
                   </div>
                   <div>
-                    <h3 className="font-bold">Coached On</h3>
                     <p> {data.coaching}</p>
                   </div>
+                  <Button
+                    className="p-2 rounded-xl bg-blue-600 text-white "
+                    label="Close"
+                    onClick={() => removeData(index)}
+                  />
                 </li>
-                <Button
-                  className="p-2 rounded-xl bg-blue-600 text-white"
-                  label="Close"
-                  onClick={() => removeData(index)}
-                />
               </div>
             ))}
           </ul>
         )}
+        <ul>
+          {filteredUsers.map((allFormData) => (
+            <li key={allFormData.id}>{allFormData.groups}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );
