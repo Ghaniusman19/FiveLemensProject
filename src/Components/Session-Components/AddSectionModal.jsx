@@ -1,15 +1,15 @@
 import React from "react";
 import Button from "../ButtonComponent/Button";
-import { useState } from "react";
-const AddSectionModal = ({ show, onClose }) => {
+import { useState, useRef } from "react";
+const AddSectionModal = ({ show, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
     groups: "",
     teams: "",
     users: "",
     coaching: "",
   });
+  const formRef = useRef(null);
   if (!show) return null;
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -20,8 +20,11 @@ const AddSectionModal = ({ show, onClose }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
-    // setFormData("");
     onClose();
+    onSubmit(formData);
+    setFormData("");
+    formRef.current.reset();
+    // onFormData(formData)
     //   fetch("https://fldemo.fivelumenstest.com/api/auth/coaching-sessions/edit", {
     //     method: "POST",
     //     headers: {
@@ -51,7 +54,7 @@ const AddSectionModal = ({ show, onClose }) => {
           </div>
         </div>
         <hr />
-        <form className="space-y-2" onSubmit={handleSubmit}>
+        <form className="space-y-2" onSubmit={handleSubmit} ref={formRef}>
           <div>
             <label htmlFor="groups" className="text-gray-950 font-semibold">
               Groups :
@@ -62,13 +65,18 @@ const AddSectionModal = ({ show, onClose }) => {
               className="w-full border border-gray-300 p-2 rounded"
               value={formData.groups}
               onChange={handleChange}
+              required
             >
               <option value="" className="text-gray-600">
                 Select Groups
               </option>
-              <option value="electronics">Electronics</option>
-              <option value="clothing">Clothing</option>
-              <option value="books">Books</option>
+              <option>Select All</option>
+              <option>Guatemala City</option>
+              <option>Guatemala </option>
+              <option>Guatemala 1</option>
+              <option>Guatemala 2</option>
+              <option>Guatemala 3</option>
+              <option>Guatemala 4</option>
             </select>
           </div>
           <div>
@@ -81,13 +89,16 @@ const AddSectionModal = ({ show, onClose }) => {
               className="w-full border border-gray-300 p-2 rounded"
               value={formData.teams}
               onChange={handleChange}
+              required
             >
               <option value="" className="text-gray-600">
                 Select Teams
               </option>
-              <option value="electronics">Electronics</option>
-              <option value="clothing">Clothing</option>
-              <option value="books">Books</option>
+              <option>Select All</option>
+              <option>Customer Care 1</option>
+              <option>Customer Care 2</option>
+              <option>Customer Care 3</option>
+              <option>Customer Care 4</option>
             </select>
           </div>
           <div>
@@ -100,6 +111,7 @@ const AddSectionModal = ({ show, onClose }) => {
               className="w-full border border-gray-300 p-2 rounded"
               value={formData.users}
               onChange={handleChange}
+              required
             >
               <option value="" className="text-gray-600">
                 Select Users
@@ -119,6 +131,7 @@ const AddSectionModal = ({ show, onClose }) => {
               className="w-full border border-gray-300 p-2 rounded"
               value={formData.coaching}
               onChange={handleChange}
+              required
             >
               <option value="" className="text-gray-600">
                 Select Coaching Form
