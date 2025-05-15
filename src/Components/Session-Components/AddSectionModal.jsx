@@ -9,9 +9,7 @@ const AddSectionModal = ({ show, onClose }) => {
     coaching: "",
   });
   if (!show) return null;
-  //   const [formData ,setFormData]= useState( { groups: ""
-  //      }
-  // )
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -22,8 +20,22 @@ const AddSectionModal = ({ show, onClose }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
-    // Here you would typically send the data to an API or process it further
+    // setFormData("");
+    onClose();
+    //   fetch("https://fldemo.fivelumenstest.com/api/auth/coaching-sessions/edit", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(formData),
+    //   })
+    //     .then((res) => res.json())
+    //     .then((data) => {
+    //       console.log("User added:", data);
+    //     })
+    //     .catch((err) => console.error(err));
   };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-xl max-w-max">
