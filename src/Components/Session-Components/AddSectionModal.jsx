@@ -23,19 +23,6 @@ const AddSectionModal = ({ show, onClose, onSubmit }) => {
     onSubmit(formData);
     setFormData("");
     formRef.current.reset();
-    // onFormData(formData)
-    //   fetch("https://fldemo.fivelumenstest.com/api/auth/coaching-sessions/edit", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(formData),
-    //   })
-    //     .then((res) => res.json())
-    //     .then((data) => {
-    //       console.log("User added:", data);
-    //     })
-    //     .catch((err) => console.error(err));
   };
 
   return (

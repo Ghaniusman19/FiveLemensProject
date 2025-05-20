@@ -13,6 +13,7 @@ import Evaluation from "../Pages/Evaluation";
 import Reports from "../Pages/Reports";
 import Export from "../Pages/Export";
 import APIs from "../Pages/APIs";
+import ScoreCardEdit from "../Pages/ScoreCardEdit";
 export const route = [
   { path: "/", element: <DashBoard /> },
   { path: "/dashboard", element: <DashBoard /> },
@@ -24,6 +25,7 @@ export const route = [
   { path: "/coaching/forms", element: <Forms /> },
   { path: "/coaching/session", element: <Session /> },
   { path: "/Quality/scorecard", element: <ScoreCard /> },
+  { path: "/Quality/scorecard/edit", element: <ScoreCardEdit /> },
   { path: "/coaching/performanceplan", element: <PerformancePlan /> },
   { path: "/Quality/evaluation", element: <Evaluation /> },
   { path: "/Quality/promptlibrary", element: <PromptLibrary /> },
