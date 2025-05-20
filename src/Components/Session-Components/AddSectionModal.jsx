@@ -1,4 +1,3 @@
-import React from "react";
 import Button from "../ButtonComponent/Button";
 import { useState, useRef } from "react";
 const AddSectionModal = ({ show, onClose, onSubmit }) => {
@@ -40,7 +39,7 @@ const AddSectionModal = ({ show, onClose, onSubmit }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="transition-all duration-300 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-xl max-w-max">
         <div className="form-header flex justify-between">
           <div className="text">

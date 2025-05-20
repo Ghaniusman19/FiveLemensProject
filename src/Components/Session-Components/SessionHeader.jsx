@@ -39,7 +39,7 @@ const SessionHeader = () => {
     setaddSectionModal(true);
   };
   return (
-    <div className="session-header p-3">
+    <div className="session-header p-3 transition-all duration-500">
       <div className="flex justify-between flex-row items-center">
         <div className="left basis-2/4 p-2">
           <div>
