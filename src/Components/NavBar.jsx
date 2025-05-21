@@ -85,7 +85,7 @@ const NavBar = () => {
                 <ul className="absolute  text-[#2A362B]  top-12 z-10 rounded-md bg-white p-2 shadow-xl  w-[178px]">
                   <li>
                     {" "}
-                    <Link to="/Quality/scorecards">Scorecards </Link>{" "}
+                    <Link to="/Quality/scorecard">Scorecards </Link>{" "}
                   </li>
                   <li>
                     {" "}

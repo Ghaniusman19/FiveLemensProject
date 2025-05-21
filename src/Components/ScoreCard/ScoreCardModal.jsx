@@ -1,7 +1,7 @@
 import Button from "../ButtonComponent/Button";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-const ScoreCardModal = ({ show, onClose, onSubmit }) => {
+const ScoreCardModal = ({ show, onClose, onSubmit  }) => {
   const [isChecked, setIsChecked] = useState(false);
   const handleCheckboxChange = (event) => {
     setIsChecked(event.target.checked);
@@ -67,6 +67,7 @@ const ScoreCardModal = ({ show, onClose, onSubmit }) => {
               required
             />{" "}
           </div>
+
           <div>
             <label
               htmlFor="description"
@@ -74,7 +75,8 @@ const ScoreCardModal = ({ show, onClose, onSubmit }) => {
             >
               Description :
             </label>
-            <input
+            <textarea
+              rows="4"
               id="description"
               name="description"
               className="w-full border border-gray-300 p-2 rounded"
@@ -234,6 +236,7 @@ const ScoreCardModal = ({ show, onClose, onSubmit }) => {
         </form>
       </div>
     </div>
+
   );
 };
 
