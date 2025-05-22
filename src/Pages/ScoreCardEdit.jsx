@@ -1,17 +1,71 @@
 import Container from "../Components/Container";
+import { useParams } from "react-router-dom";
+
 import { Settings } from "lucide-react";
+import { useState, useEffect } from "react";
 import EditCriteriaModal from "../Components/ScoreCard/EditCriteriaModal";
-import React, { useState, useEffect } from "react";
 import EditSectionModal from "../Components/ScoreCard/EditSectionModal";
 import AddCriteriaModal from "../Components/ScoreCard/AddCriteriaModal";
 import AddSectionModal from "../Components/ScoreCard/AddSectionModal";
 import SectionList from "../Components/ScoreCard/SectionList";
 
 const ScoreCardEdit = () => {
+  const { id } = useParams();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
   const [formData, setFormData] = useState({});
   const [sections, setSections] = useState([]);
+  const [editingSectionId, setEditingSectionId] = useState(null);
+
+  // drag and drop
+  //
+
+  const handleMetaDragStart = (e, index) => {
+    e.dataTransfer.setData("itemIndex", index);
+  };
+
+  const handleMetaDrop = (e, dropIndex) => {
+    e.preventDefault();
+    const draggedIndex = parseInt(e.dataTransfer.getData("itemIndex"), 10);
+    if (draggedIndex === dropIndex) return;
+
+    const updatedItems = [...sections];
+    const [draggedItem] = updatedItems.splice(draggedIndex, 1);
+    updatedItems.splice(dropIndex, 0, draggedItem);
+
+    setSections(updatedItems);
+  };
+  //
+  const handleDragStart = (e, index) => {
+    e.dataTransfer.setData("itemIndex", index);
+  };
+
+  const handleDrop = (e, dropIndex) => {
+    e.preventDefault();
+    const draggedIndex = parseInt(e.dataTransfer.getData("itemIndex"), 10);
+    if (draggedIndex === dropIndex) return;
+
+    const updatedItems = [...section1];
+    const [draggedItem] = updatedItems.splice(draggedIndex, 1);
+    updatedItems.splice(dropIndex, 0, draggedItem);
+
+    setSections1(updatedItems);
+  };
+  //drag and drop
+
+  //criteria drag and drop
+  const handleReorderCriteria = (sectionId, fromIndex, toIndex) => {
+    setSections1((sections) =>
+      sections.map((section) => {
+        if (section.id !== sectionId) return section;
+        const updatedCriteria = [...section.criteria];
+        const [moved] = updatedCriteria.splice(fromIndex, 1);
+        updatedCriteria.splice(toIndex, 0, moved);
+        return { ...section, criteria: updatedCriteria };
+      })
+    );
+  };
+  //
 
   //comments
   const [section1, setSections1] = useState([]);
@@ -25,6 +79,23 @@ const ScoreCardEdit = () => {
   const [currentCriteria, setCurrentCriteria] = useState(null);
   const [showAddMenu, setShowAddMenu] = useState(false);
 
+  // handle update criteria value
+  const handleUpdateCriteriaValue = (sectionId, criteriaId, newValue) => {
+    setSections1((sections) =>
+      sections.map((section) =>
+        section.id === sectionId
+          ? {
+              ...section,
+              criteria: section.criteria.map((criterion) =>
+                criterion.id === criteriaId
+                  ? { ...criterion, value: newValue }
+                  : criterion
+              ),
+            }
+          : section
+      )
+    );
+  };
   // Initialize with Total Possible Points section at the end
   useEffect(() => {
     setSections1([
@@ -127,7 +198,7 @@ const ScoreCardEdit = () => {
 
   const handleDeleteCriteria = (sectionId, criteriaId) => {
     setSections1(
-      sections.map((section) =>
+      section1.map((section) =>
         section.id === sectionId
           ? {
               ...section,
@@ -164,14 +235,41 @@ const ScoreCardEdit = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newSection = {
-      id: Date.now(),
-      title: forms[activeModal].title,
-      data: formData,
-    };
-    setSections([...sections, newSection]);
-    setActiveModal(null); // Close modal
-    setFormData({}); // Reset form data
+    fetch(`/api/scorecards/${id}`, {
+      method: "POST", // or "PUT" for editing
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // handle success
+        console.log("Form submitted successfully:", data);
+      })
+      .catch((err) => {
+        // handle error
+        console.error("Error submitting form:", err);
+      });
+    if (editingSectionId) {
+      // Edit mode: update the section
+      setSections(
+        sections.map((section) =>
+          section.id === editingSectionId
+            ? { ...section, data: formData }
+            : section
+        )
+      );
+      setEditingSectionId(null);
+    } else {
+      // Add mode: add new section
+      const newSection = {
+        id: Date.now(),
+        title: forms[activeModal].title,
+        data: formData,
+      };
+      setSections([...sections, newSection]);
+    }
+    setActiveModal(null);
+    setFormData({});
   };
 
   const handleInputChange = (e) => {
@@ -189,6 +287,7 @@ const ScoreCardEdit = () => {
     setActiveModal(
       Object.keys(forms).find((key) => forms[key].title === sectionToEdit.title)
     );
+    setEditingSectionId(id); // Track which section is being edited
   };
 
   return (
@@ -230,10 +329,10 @@ const ScoreCardEdit = () => {
           {/* meta data , scoring and total possible points sections  */}
 
           <div className="meta-data-wrapper">
-            <div className="p-6  mx-auto">
+            <div className="px-6 pb-0 pt-6  mx-auto">
               {/* Dropdown Trigger Button */}
               <div className="relative">
-                <div className="flex justify-between items-center mb-4 bg-blue-100 py-2.5 px-1.5 relative">
+                <div className="flex justify-between items-center  bg-blue-100 py-2.5 px-1.5 relative">
                   <h3 className="font-bold text-xl">Meta Data</h3>
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -304,25 +403,40 @@ const ScoreCardEdit = () => {
               )}
 
               {/* Dynamic Sections */}
-              <div className="mt-8 space-y-4">
-                {sections.map((section) => (
+              <div className=" space-y-4">
+                {sections.map((section, index) => (
                   <div
+                    draggable
+                    onDragStart={(e) => handleMetaDragStart(e, index)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => handleMetaDrop(e, index)}
                     key={section.id}
-                    className="border rounded-lg p-4 shadow-sm"
+                    className="border  rounded-lg p-4 shadow-sm"
                   >
-                    <div className="flex justify-between items-center">
+                    <div
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, index)}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={(e) => handleDrop(e, index)}
+                      className="flex justify-between items-center"
+                    >
                       <h3 className="text-lg font-semibold">
-                        {section.title}
+                        {section.data?.description && (
+                          <p className="text-gray-600 mt-1">
+                            {section.data.description}
+                          </p>
+                        )}
                         {/* :{" "}
                         {Object.values(section.data).join(", ")} */}
                       </h3>
+
                       <div className="relative">
                         <button
-                          // onClick={() =>
-                          //   document
-                          //     .getElementById(`dropdown-${section.id}`)
-                          //     .classList.toggle("hidden")
-                          // }
+                          onClick={() =>
+                            document
+                              .getElementById(`dropdown-${section.id}`)
+                              .classList.toggle("hidden")
+                          }
                           className="p-1 rounded hover:bg-gray-200 "
                         >
                           &#8942;
@@ -333,13 +447,13 @@ const ScoreCardEdit = () => {
                         >
                           <button
                             onClick={() => handleEditSection(section.id)}
-                            className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
+                            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleDeleteSection(section.id)}
-                            className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
                           >
                             Delete
                           </button>
@@ -352,7 +466,7 @@ const ScoreCardEdit = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-5">
+          <div className="bg-white rounded-lg shadow-sm p-6">
             {/* scoring section starts here */}
             <div className="flex justify-between  relative bg-blue-100 py-2.5 px-1.5">
               <h1 className="heading font-bold text-2xl">Scoring</h1>
@@ -381,7 +495,7 @@ const ScoreCardEdit = () => {
             </div>
 
             <SectionList
-              sections={sections}
+              sections={section1}
               onEditSection={(section) => {
                 setCurrentSection(section);
                 setShowEditSectionModal(true);
@@ -397,50 +511,56 @@ const ScoreCardEdit = () => {
                 setShowEditCriteriaModal(true);
               }}
               onDeleteCriteria={handleDeleteCriteria}
+              onUpdateCriteriaValue={handleUpdateCriteriaValue}
+              onReorderCriteria={handleReorderCriteria} // <-- Add this line
             />
-          </div>
+            {/* <div className="totalpoints bg-blue-100 px-1.5 py-2 flex justify-between items-center">
+              <h3 className="text-xl font-medium">Total Possible Points</h3>
+              <button>1</button>
+            </div>
+          </div> */}
 
-          {showAddSectionModal && (
-            <AddSectionModal
-              onClose={() => setShowAddSectionModal(false)}
-              onAdd={handleAddSection}
-            />
-          )}
-
-          {showEditSectionModal && currentSection && (
-            <EditSectionModal
-              section={currentSection}
-              onClose={() => setShowEditSectionModal(false)}
-              onSave={handleEditSection1}
-            />
-          )}
-
-          {showAddCriteriaModal && (
-            <AddCriteriaModal
-              onClose={() => setShowAddCriteriaModal(false)}
-              onAdd={handleAddCriteria}
-            />
-          )}
-
-          {showEditCriteriaModal &&
-            currentCriteria &&
-            currentSectionForCriteria && (
-              <EditCriteriaModal
-                criteria={currentCriteria}
-                onClose={() => setShowEditCriteriaModal(false)}
-                onSave={(newName) =>
-                  handleEditCriteria(
-                    currentSectionForCriteria,
-                    currentCriteria.id,
-                    newName
-                  )
-                }
+            {showAddSectionModal && (
+              <AddSectionModal
+                onClose={() => setShowAddSectionModal(false)}
+                onAdd={handleAddSection}
               />
             )}
 
-          {/* {JSON.stringify(formData, null, 2)} */}
-          {/* <h2>Submitted Coaching Form Data:</h2> */}
-          {/* <div>
+            {showEditSectionModal && currentSection && (
+              <EditSectionModal
+                section={currentSection}
+                onClose={() => setShowEditSectionModal(false)}
+                onSave={handleEditSection1}
+              />
+            )}
+
+            {showAddCriteriaModal && (
+              <AddCriteriaModal
+                onClose={() => setShowAddCriteriaModal(false)}
+                onAdd={handleAddCriteria}
+              />
+            )}
+
+            {showEditCriteriaModal &&
+              currentCriteria &&
+              currentSectionForCriteria && (
+                <EditCriteriaModal
+                  criteria={currentCriteria}
+                  onClose={() => setShowEditCriteriaModal(false)}
+                  onSave={(newName) =>
+                    handleEditCriteria(
+                      currentSectionForCriteria,
+                      currentCriteria.id,
+                      newName
+                    )
+                  }
+                />
+              )}
+
+            {/* {JSON.stringify(formData, null, 2)} */}
+            {/* <h2>Submitted Coaching Form Data:</h2> */}
+            {/* <div>
         {allFormData.length > 0 && (
           <ul className="">
             <div className="flex justify-between p-2">
@@ -475,6 +595,7 @@ const ScoreCardEdit = () => {
           </ul>
         )}
       </div> */}
+          </div>
         </div>
       </Container>
     </div>

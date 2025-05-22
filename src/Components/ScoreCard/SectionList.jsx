@@ -9,12 +9,30 @@ const SectionList = ({
   onAddCriteria,
   onEditCriteria,
   onDeleteCriteria,
+  onUpdateCriteriaValue,
+   onReorderCriteria,
 }) => {
   const [openMenuId, setOpenMenuId] = useState(null);
   const [openCriteriaMenuId, setOpenCriteriaMenuId] = useState(null);
   const menuRefs = useRef({});
   const criteriaMenuRefs = useRef({});
 
+  // criteria drAg and drop
+  const handleCriteriaDragStart = (e, sectionId, criteriaIndex) => {
+  e.dataTransfer.setData("criteriaIndex", criteriaIndex);
+  e.dataTransfer.setData("sectionId", sectionId);
+};
+
+const handleCriteriaDrop = (e, sectionId, dropIndex) => {
+  e.preventDefault();
+  const draggedIndex = parseInt(e.dataTransfer.getData("criteriaIndex"), 10);
+  const draggedSectionId = e.dataTransfer.getData("sectionId");
+  if (draggedIndex === dropIndex && draggedSectionId === sectionId) return;
+  if (typeof onReorderCriteria === "function") {
+    onReorderCriteria(sectionId, draggedIndex, dropIndex);
+  }
+};
+  //
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -58,6 +76,17 @@ const SectionList = ({
   const isTotalPointsSection = (section) => {
     return section.name === "Total Possible Points";
   };
+  // ...existing code...
+
+  // Calculate total possible points (sum of all criteria values in all sections except "Total Possible Points")
+  const totalPossiblePoints = sections
+    .filter((section) => section.name !== "Total Possible Points")
+    .reduce(
+      (sectionSum, section) =>
+        sectionSum +
+        section.criteria.reduce((sum, c) => sum + (Number(c.value) || 0), 0),
+      0
+    );
 
   return (
     <div className="mt-5">
@@ -68,12 +97,20 @@ const SectionList = ({
         >
           <div className="flex justify-between items-center p-4 bg-gray-50 rounded-t-md">
             <div className="font-medium flex-grow">{section.name}</div>
-            <div className="font-semibold mr-5">0</div>
+            <div className="font-semibold mr-5">
+              {
+                // Calculate the sum of all criterion values for this section
+                section.criteria.reduce(
+                  (sum, c) => sum + (Number(c.value) || 0),
+                  0
+                )
+              }
+            </div>
 
             {/* Only show the menu for sections other than "Total Possible Points" */}
             {!isTotalPointsSection(section) && (
               <div
-                className="relative"
+                className="relative "
                 ref={(el) => (menuRefs.current[section.id] = el)}
               >
                 <button
@@ -120,17 +157,35 @@ const SectionList = ({
 
           {section.criteria.length > 0 && (
             <div className="px-4 py-2.5">
-              {section.criteria.map((criterion) => {
-                const criteriaMenuId = getCriteriaMenuId(
-                  section.id,
-                  criterion.id
-                );
-                return (
-                  <div
-                    key={criterion.id}
-                    className="py-2 border-b border-gray-100 last:border-b-0 flex justify-between items-center"
-                  >
+             {section.criteria.map((criterion, cIndex) => {
+  const criteriaMenuId = getCriteriaMenuId(section.id, criterion.id);
+  return (
+    <div
+      key={criterion.id}
+      className="py-2 border-b border-gray-100 last:border-b-0 flex justify-between items-center"
+      draggable
+      onDragStart={e => handleCriteriaDragStart(e, section.id, cIndex)}
+      onDragOver={e => e.preventDefault()}
+      onDrop={e => handleCriteriaDrop(e, section.id, cIndex)}
+    >
                     <div className="flex-grow">{criterion.name}</div>
+                    {/* Input for criterion value */}
+                    <input
+                      type="number"
+                      className="w-16 border rounded px-2 py-1 mr-2"
+                      value={criterion.value}
+                      onChange={(e) => {
+                        // Call a prop to update the value in parent
+                        if (typeof onUpdateCriteriaValue === "function") {
+                          onUpdateCriteriaValue(
+                            section.id,
+                            criterion.id,
+                            Number(e.target.value)
+                          );
+                        }
+                      }}
+                      maxLength={3}
+                    />
                     <div
                       className="relative"
                       ref={(el) =>
@@ -170,6 +225,12 @@ const SectionList = ({
                   </div>
                 );
               })}
+              <>
+                <div className="mt-6 border-t pt-4 flex justify-between items-center">
+                  <div className="font-bold text-lg">Total Possible Points</div>
+                  <div className="font-bold text-lg">{totalPossiblePoints}</div>
+                </div>
+              </>
             </div>
           )}
         </div>

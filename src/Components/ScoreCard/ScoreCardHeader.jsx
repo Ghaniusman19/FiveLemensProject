@@ -1,4 +1,3 @@
-
 import React from "react";
 import ScoreCardModal from "./ScoreCardModal";
 import Button from "../ButtonComponent/Button";
@@ -21,25 +20,40 @@ const ScoreCardHeader = () => {
   useEffect(() => {
     localStorage.setItem("My Data", JSON.stringify(allFormData));
   }, [allFormData]);
-  const handleFormSubmit = (newFormData) => {
-    setAllformData([...allFormData, newFormData]);
-  };
-//   const removeData = (index) => {
-//     const updatedData = allFormData.filter((_, item) => item !== index);
-//     setAllformData(updatedData);
-//   };
+ const handleFormSubmit = async (newFormData) => {
+  setAllformData([...allFormData, newFormData]);
+  try {
+    const response = await fetch("https://fldemo.fivelumenstest.com/api/auth/groups/all", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newFormData),
+    });
+    const data = await response.json();
+    console.log("API Response:", data); // See response in browser console
+    // Optionally: set a state to show the response in the UI
+  } catch (error) {
+    console.error("API Error:", error);
+  }
+};
+  //   const removeData = (index) => {
+  //     const updatedData = allFormData.filter((_, item) => item !== index);
+  //     setAllformData(updatedData);
+  //   };
 
   const handleAddSectionModal = () => {
     setaddSectionModal(true);
   };
 
+  
   return (
     <div className="session-header p-3 transition-all duration-500">
       <div className="flex justify-between flex-row items-center">
         <div className="left basis-2/4 p-2">
           <div>
-            <h3 className="text-[#101828] text-xl font-bold" >Scorecards</h3>
-            <p className="font-sans font-normal text-gray-600">Manage your scorecards and its details here</p>
+            <h3 className="text-[#101828] text-xl font-bold">Scorecards</h3>
+            <p className="font-sans font-normal text-gray-600">
+              Manage your scorecards and its details here
+            </p>
           </div>
         </div>
         <div className="right basis-2/4  flex gap-3 justify-end items-center">
@@ -58,11 +72,9 @@ const ScoreCardHeader = () => {
             </form>
           </div>
           <div className="filter-btn">
-            <button   className="p-2 border border-gray rounded-md text-gray-600">
+            <button className="p-2 border border-gray rounded-md text-gray-600">
               <SlidersHorizontal className="w-5 h-5" />
             </button>
-
-            
           </div>
           <div className="addsession-btn">
             <button
