@@ -67,6 +67,33 @@ const ScoreCardEdit = () => {
   };
   //
 
+  // section drag and drop
+  const handleSectionDragStart = (e, index) => {
+    e.dataTransfer.setData("sectionIndex", index);
+  };
+
+  const handleSectionDrop = (e, dropIndex) => {
+    e.preventDefault();
+    const draggedIndex = parseInt(e.dataTransfer.getData("sectionIndex"), 10);
+    if (draggedIndex === dropIndex) return;
+
+    // Don't allow reordering the Total Possible Points section
+    const totalPointsSection = section1.find(
+      (section) => section.name === "Total Possible Points"
+    );
+    const otherSections = section1.filter(
+      (section) => section.name !== "Total Possible Points"
+    );
+
+    const updatedSections = [...otherSections];
+    const [draggedSection] = updatedSections.splice(draggedIndex, 1);
+    updatedSections.splice(dropIndex, 0, draggedSection);
+
+    setSections1([...updatedSections, totalPointsSection]);
+  };
+
+  //
+
   //comments
   const [section1, setSections1] = useState([]);
   const [showAddSectionModal, setShowAddSectionModal] = useState(false);
@@ -214,18 +241,59 @@ const ScoreCardEdit = () => {
   //comments
 
   // Forms configuration (different for each button)
+  // const forms = {
+  //   form1: {
+  //     title: " Add Single Select ",
+  //     fields: ["Description", "Single Select Options"],
+  //   },
+  //   form2: {
+  //     title: "Add Multi Select",
+  //     fields: ["Description", "Multi Select Option"],
+  //   },
+  //   form3: { title: "Add Small Text", fields: ["Description"] },
+  //   form4: { title: "Add Large Text", fields: ["Description"] },
+  //   form5: { title: "Add Date", fields: ["Description"] },
+  // };
   const forms = {
     form1: {
-      title: " Add Single Select ",
-      fields: ["Description", "Single Select Options"],
+      title: "Add Single Select",
+      fields: [
+        { label: "Description", name: "description", type: "textarea" },
+        {
+          label: "Single Select Options",
+          name: "singleSelect",
+          type: "select",
+          options: ["Option 1", "Option 2"],
+        },
+      ],
     },
     form2: {
       title: "Add Multi Select",
-      fields: ["Description", "Multi Select Option"],
+      fields: [
+        { label: "Description", name: "description", type: "textarea" },
+        {
+          label: "Multi Select Option",
+          name: "multiSelect",
+          type: "checkbox-group",
+          options: ["Option 1", "Option 2"],
+        },
+      ],
     },
-    form3: { title: "Add Small Text", fields: ["Description"] },
-    form4: { title: "Add Large Text", fields: ["Description"] },
-    form5: { title: "Add Date", fields: ["Description"] },
+    form3: {
+      title: "Add Small Text",
+      fields: [{ label: "Description", name: "description", type: "input" }],
+    },
+    form4: {
+      title: "Add Large Text",
+      fields: [{ label: "Description", name: "description", type: "textarea" }],
+    },
+    form5: {
+      title: "Add Date",
+      fields: [
+        { label: "Description", name: "description", type: "textarea" },
+        { label: "Date", name: "date", type: "date" },
+      ],
+    },
   };
 
   const handleButtonClick = (formKey) => {
@@ -271,10 +339,31 @@ const ScoreCardEdit = () => {
     setActiveModal(null);
     setFormData({});
   };
-
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
+
+    // For checkbox-group (multiple checkboxes with same name)
+    if (
+      type === "checkbox" &&
+      e.target.getAttribute("data-group") === "checkbox-group"
+    ) {
+      setFormData((prev) => {
+        const arr = Array.isArray(prev[name]) ? prev[name] : [];
+        if (checked) {
+          return { ...prev, [name]: [...arr, value] };
+        } else {
+          return { ...prev, [name]: arr.filter((v) => v !== value) };
+        }
+      });
+    }
+    // For single checkbox
+    else if (type === "checkbox") {
+      setFormData({ ...formData, [name]: checked });
+    }
+    // For all other input types
+    else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleDeleteSection = (id) => {
@@ -367,19 +456,97 @@ const ScoreCardEdit = () => {
                     </h2>
                     <form onSubmit={handleSubmit}>
                       {forms[activeModal].fields.map((field) => (
-                        <div key={field} className="mb-4">
+                        <div key={field.name} className="mb-4">
                           <label className="block text-gray-700 mb-2">
-                            {field}:
+                            {field.label}:
                           </label>
-
-                          <textarea
-                            type="text"
-                            name={field.toLowerCase()}
-                            onChange={handleInputChange}
-                            value={formData[field.toLowerCase()] || ""}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                          />
+                          {field.type === "textarea" && (
+                            <textarea
+                              name={field.name}
+                              onChange={handleInputChange}
+                              value={formData[field.name] || ""}
+                              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              required
+                            />
+                          )}
+                          {field.type === "input" && (
+                            <input
+                              type="text"
+                              name={field.name}
+                              onChange={handleInputChange}
+                              value={formData[field.name] || ""}
+                              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              required
+                            />
+                          )}
+                          {field.type === "select" && (
+                            <select
+                              name={field.name}
+                              onChange={handleInputChange}
+                              value={formData[field.name] || ""}
+                              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              required
+                            >
+                              <option value="">Select an option</option>
+                              {field.options.map((opt) => (
+                                <option key={opt} value={opt}>
+                                  {opt}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                          {field.type === "checkbox-group" && (
+                            <div>
+                              {field.options.map((opt) => (
+                                <label key={opt} className="mr-4">
+                                  <input
+                                    type="checkbox"
+                                    name={field.name}
+                                    value={opt}
+                                    data-group="checkbox-group"
+                                    checked={
+                                      Array.isArray(formData[field.name]) &&
+                                      formData[field.name].includes(opt)
+                                    }
+                                    onChange={(e) => {
+                                      const checked = e.target.checked;
+                                      setFormData((prev) => {
+                                        const arr = Array.isArray(
+                                          prev[field.name]
+                                        )
+                                          ? prev[field.name]
+                                          : [];
+                                        if (checked) {
+                                          return {
+                                            ...prev,
+                                            [field.name]: [...arr, opt],
+                                          };
+                                        } else {
+                                          return {
+                                            ...prev,
+                                            [field.name]: arr.filter(
+                                              (v) => v !== opt
+                                            ),
+                                          };
+                                        }
+                                      });
+                                    }}
+                                  />{" "}
+                                  {opt}
+                                </label>
+                              ))}
+                            </div>
+                          )}
+                          {field.type === "date" && (
+                            <input
+                              type="date"
+                              name={field.name}
+                              onChange={handleInputChange}
+                              value={formData[field.name] || ""}
+                              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              required
+                            />
+                          )}
                         </div>
                       ))}
                       <div className="flex justify-end space-x-2">
@@ -496,6 +663,7 @@ const ScoreCardEdit = () => {
 
             <SectionList
               sections={section1}
+              showAddCriteriaModal={showAddCriteriaModal}
               onEditSection={(section) => {
                 setCurrentSection(section);
                 setShowEditSectionModal(true);
@@ -512,13 +680,10 @@ const ScoreCardEdit = () => {
               }}
               onDeleteCriteria={handleDeleteCriteria}
               onUpdateCriteriaValue={handleUpdateCriteriaValue}
-              onReorderCriteria={handleReorderCriteria} // <-- Add this line
+              onReorderCriteria={handleReorderCriteria}
+              onSectionDragStart={handleSectionDragStart}
+              onSectionDrop={handleSectionDrop}
             />
-            {/* <div className="totalpoints bg-blue-100 px-1.5 py-2 flex justify-between items-center">
-              <h3 className="text-xl font-medium">Total Possible Points</h3>
-              <button>1</button>
-            </div>
-          </div> */}
 
             {showAddSectionModal && (
               <AddSectionModal

@@ -1,7 +1,5 @@
-import React from "react";
 import ScoreCardModal from "./ScoreCardModal";
-import Button from "../ButtonComponent/Button";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Plus, Search, SlidersHorizontal } from "lucide-react";
 
 const ScoreCardHeader = () => {
@@ -17,24 +15,31 @@ const ScoreCardHeader = () => {
     setSearchItem(searchTerm);
   };
 
-  useEffect(() => {
-    localStorage.setItem("My Data", JSON.stringify(allFormData));
-  }, [allFormData]);
- const handleFormSubmit = async (newFormData) => {
-  setAllformData([...allFormData, newFormData]);
-  try {
-    const response = await fetch("https://fldemo.fivelumenstest.com/api/auth/groups/all", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newFormData),
-    });
-    const data = await response.json();
-    console.log("API Response:", data); // See response in browser console
-    // Optionally: set a state to show the response in the UI
-  } catch (error) {
-    console.error("API Error:", error);
-  }
-};
+  // useEffect(() => {
+  //   localStorage.setItem("My Data", JSON.stringify(allFormData));
+  // }, [allFormData]);
+  const handleFormSubmit = async (newFormData) => {
+    setAllformData([...allFormData, newFormData]);
+    try {
+      const response = await fetch(
+        "https://fldemo.fivelumenstest.com/api/auth/scorecards",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Bearer JTIyZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmtZWFJoSWpwN0lsOXBaQ0k2SWpZeVl6UTBNVFV3TURobU5tWmtNbUUwTW1Vd05ETmxPU0o5TENKcFlYUWlPakUzTkRjeE1qUTNPVE1zSW1WNGNDSTZNVGMwT0RReU1EYzVNMzAuQ09ETGt2MElkXzBzT09UQi16d2REMG9RdHllQVRVOU9GZlhuSjFvbDAyWSUyMg==",
+          },
+          body: JSON.stringify(newFormData),
+        }
+      );
+      const data = await response.json();
+      // See response in browser console
+      console.log("API Response:", data);
+    } catch (error) {
+      console.error("API Error:", error);
+    }
+  };
   //   const removeData = (index) => {
   //     const updatedData = allFormData.filter((_, item) => item !== index);
   //     setAllformData(updatedData);
@@ -44,7 +49,6 @@ const ScoreCardHeader = () => {
     setaddSectionModal(true);
   };
 
-  
   return (
     <div className="session-header p-3 transition-all duration-500">
       <div className="flex justify-between flex-row items-center">
