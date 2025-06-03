@@ -6,8 +6,27 @@ const ProfileMenu = () => {
   const [showProfileModal, setshowProfileModal] = useState(false);
   // const [reminders, setReminders] = useState([]);
 
-  const handleProfile = () => {
+  const handleProfile = async () => {
     setshowProfileModal(true);
+      try {
+      const response = await fetch(
+        "https://fldemo.fivelumenstest.com/api/auth/profile",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+          },
+        }
+      );
+      const data = await response.json();
+      // See response in browser console
+      console.log("API Response:", data);
+    } catch (error) {
+      console.error("API Error:", error);
+    }
+
   };
 
   const handleSubmit = () => {

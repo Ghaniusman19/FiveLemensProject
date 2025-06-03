@@ -28,7 +28,7 @@ const ScoreCardModal = ({ show, onClose, onSubmit  }) => {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
     onClose();
@@ -36,6 +36,25 @@ const ScoreCardModal = ({ show, onClose, onSubmit  }) => {
     setFormData("");
     navigate("/Quality/scorecard/edit");
     formRef.current.reset();
+
+     try {
+      const response = await fetch(
+        "https://fldemo.fivelumenstest.com/api/auth/scorecards/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+      const data = await response.json();
+      // See response in browser console
+      console.log("API Response:", data);
+    } catch (error) {
+      console.error("API Error:", error);
+    }
   };
 
   return (

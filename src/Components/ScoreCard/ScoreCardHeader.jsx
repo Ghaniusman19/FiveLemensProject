@@ -27,8 +27,8 @@ const ScoreCardHeader = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              "Bearer JTIyZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmtZWFJoSWpwN0lsOXBaQ0k2SWpZeVl6UTBNVFV3TURobU5tWmtNbUUwTW1Vd05ETmxPU0o5TENKcFlYUWlPakUzTkRjeE1qUTNPVE1zSW1WNGNDSTZNVGMwT0RReU1EYzVNMzAuQ09ETGt2MElkXzBzT09UQi16d2REMG9RdHllQVRVOU9GZlhuSjFvbDAyWSUyMg==",
+            authorization:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
           },
           body: JSON.stringify(newFormData),
         }
