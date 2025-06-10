@@ -1,5 +1,7 @@
 import Container from "../Components/Container";
 import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import ScoreCardModal from "../Components/ScoreCard/ScoreCardModal";
 
 import { Settings } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -10,7 +12,61 @@ import AddSectionModal from "../Components/ScoreCard/AddSectionModal";
 import SectionList from "../Components/ScoreCard/SectionList";
 
 const ScoreCardEdit = () => {
+  const [showScoreCardModal, setShowScoreCardModal] = useState(false);
+  const [editFormData, setEditFormData] = useState(null);
   const { id } = useParams();
+  const location = useLocation();
+  const name =
+    location.state?.name ||
+    localStorage.getItem("scorecardName") ||
+    "Default Scorecard Name";
+  //state for the setting modal
+  // ...existing code...
+  // const [settingsFormData, setSettingsFormData] = useState({
+  //   name: "",
+  //   description: "",
+  //   managerVisible: false,
+  //   emailNotification: false,
+  //   groups: "",
+  //   allgroup: false,
+  //   evaluationType: "",
+  //   scoringModel: "",
+  //   coachingform: "",
+  // });
+  // ...inside ScoreCardEdit component...
+  const handleSettingsClick = async () => {
+    // setEditFormData(settingsFormData); // or fetch latest if needed
+    const savedData = localStorage.getItem("scorecardData");
+    if (savedData) {
+      setEditFormData(JSON.parse(savedData));
+    } else {
+      setEditFormData(null); // fallback to empty if nothing saved
+    }
+    setShowScoreCardModal(true);
+    // Fetch the latest scorecard data (replace with your API endpoint)
+    try {
+      const response = await fetch(
+        "https://fldemo.fivelumenstest.com/api/auth/groups/all",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+          },
+          body: JSON.stringify(), // or use id if available
+        }
+      );
+
+      const data = await response.json();
+      console.log(data);
+
+      // setSettingsFormData(data); // Pre-fill modal with fetched data
+    } catch (error) {
+      console.error("Failed to fetch scorecard data:", error);
+    }
+  };
+  // ...existing code...
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
   const [formData, setFormData] = useState({});
@@ -303,6 +359,7 @@ const ScoreCardEdit = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     fetch(`/api/scorecards/${id}`, {
       method: "POST", // or "PUT" for editing
       headers: { "Content-Type": "application/json" },
@@ -382,11 +439,41 @@ const ScoreCardEdit = () => {
   return (
     <div>
       <Container>
+        {showScoreCardModal && (
+          <ScoreCardModal
+            show={showScoreCardModal}
+            onClose={() => setShowScoreCardModal(false)}
+            onSubmit={(formData) => {
+              // Call your update API here
+              // fetch("https://fldemo.fivelumenstest.com/api/auth/scorecards", {
+              //   method: "POST",
+              //   headers: {
+              //     "Content-Type": "application/json",
+              //     authorization:
+              //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+              //   },
+              //   body: JSON.stringify(formData),
+              // })
+              //   .then((res) => res.json())
+              //   .then((updated) => {
+              //     setSettingsFormData(updated);
+              //     localStorage.setItem("scorecardName", updated.name);
+              //     setShowScoreCardModal(false);
+              //     window.location.reload();
+              //   });
+              localStorage.setItem("scorecardData", JSON.stringify(formData));
+              setShowScoreCardModal(false);
+            }}
+            initialData={editFormData}
+            isEdit={true}
+          />
+        )}
         <div className="manage-scorecard bg-white rounded-xl p-3 transition-all duration-500">
           <div className="flex justify-between flex-row items-center">
             <div className="left basis-2/4 p-2">
               <div>
-                <h3 className="text-[#101828] text-xl font-bold"></h3>
+                <h1 className="text-black font-bold text-2xl">{name}</h1>
+
                 <p className="font-sans font-normal text-gray-600">
                   Design your scorecard by adding or removing different meta
                   data fields or scoring criteria
@@ -395,7 +482,10 @@ const ScoreCardEdit = () => {
             </div>
             <div className="right basis-2/4  flex gap-3 justify-end items-center">
               <div className="settings flex items-center justify-center">
-                <button className="rounded-xl border border-gray px-2 py-1.5">
+                <button
+                  className="rounded-xl border border-gray px-2 py-1.5"
+                  onClick={handleSettingsClick}
+                >
                   <Settings className="w-5 h-6 text-gray-700" />
                 </button>
               </div>

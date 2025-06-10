@@ -1,24 +1,30 @@
 import Button from "../ButtonComponent/Button";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-const ScoreCardModal = ({ show, onClose, onSubmit  }) => {
+const ScoreCardModal = ({ show, onClose, onSubmit, initialData, isEdit }) => {
   const [isChecked, setIsChecked] = useState(false);
   const handleCheckboxChange = (event) => {
     setIsChecked(event.target.checked);
   };
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    managerVisible: false,
-    emailNotification: false,
-    groups: "",
-    allgroup: false,
-    evaluationType: "",
-    scoringModel: "",
-    coachingform: "",
-  });
+  const [formData, setFormData] = useState(
+    initialData || {
+      name: "",
+      description: "",
+      managerVisible: false,
+      emailNotification: false,
+      groups: "",
+      allgroup: false,
+      evaluationType: "",
+      scoringModel: "",
+      coachingform: "",
+    }
+  );
+  useEffect(() => {
+    if (initialData) setFormData(initialData);
+  }, [initialData]);
+
   const formRef = useRef(null);
   if (!show) return null;
   const handleChange = (e) => {
@@ -28,25 +34,68 @@ const ScoreCardModal = ({ show, onClose, onSubmit  }) => {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
     onClose();
     onSubmit(formData);
-    setFormData("");
-    navigate("/Quality/scorecard/edit");
-    formRef.current.reset();
+    localStorage.setItem("scorecardData", JSON.stringify(formData));
 
-     try {
+    if (!isEdit) {
+      navigate("/Quality/scorecard/edit", { state: { name: formData.name } });
+      formRef.current.reset();
+    }
+
+    try {
       const response = await fetch(
         "https://fldemo.fivelumenstest.com/api/auth/scorecards/add",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+            authorization:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
           },
           body: JSON.stringify(formData),
+        }
+      );
+      const data = await response.json();
+      // See response in browser console
+      console.log("API Response:", data);
+    } catch (error) {
+      console.error("API Error:", error);
+    }
+    try {
+      const response = await fetch(
+        "https://fldemo.fivelumenstest.com/api/auth/profile",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+          },
+          body: JSON.stringify(),
+        }
+      );
+      const data = await response.json();
+      // See response in browser console
+      console.log("API Response:", data);
+    } catch (error) {
+      console.error("API Error:", error);
+    }
+    try {
+      const response = await fetch(
+        "https://fldemo.fivelumenstest.com/api/domain-check",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+          },
+          body: JSON.stringify(),
         }
       );
       const data = await response.json();
@@ -140,7 +189,9 @@ const ScoreCardModal = ({ show, onClose, onSubmit  }) => {
                 <option>Guatemala 3</option>
                 <option>Guatemala 4</option>
               </select>
-              <p className="text-red-700 ml-2">this field is required</p>
+              {!formData.groups && (
+                <p className="text-red-700 ml-2">this field is required</p>
+              )}{" "}
             </div>
           )}
 
@@ -159,9 +210,7 @@ const ScoreCardModal = ({ show, onClose, onSubmit  }) => {
               onChange={handleChange}
               required
             >
-              <option className="text-gray-600">
-                Manual
-              </option>
+              <option className="text-gray-600">Manual</option>
               <option>Manual</option>
               <option>AI</option>
             </select>
@@ -248,14 +297,14 @@ const ScoreCardModal = ({ show, onClose, onSubmit  }) => {
             <button
               type="submit"
               className="bg-blue-700 text-white px-4 py-1 rounded"
+              // onClick={AddData}
             >
-              Add
+              {isEdit ? "Update" : "Add"}
             </button>
           </div>
         </form>
       </div>
     </div>
-
   );
 };
 

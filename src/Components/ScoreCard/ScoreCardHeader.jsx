@@ -4,6 +4,7 @@ import { Plus, Search, SlidersHorizontal } from "lucide-react";
 
 const ScoreCardHeader = () => {
   const [addSectionModal, setaddSectionModal] = useState(false);
+
   const [allFormData, setAllformData] = useState(() => {
     const storedArray = localStorage.getItem("allFormData");
     return storedArray ? JSON.parse(storedArray) : [];
@@ -45,8 +46,44 @@ const ScoreCardHeader = () => {
   //     setAllformData(updatedData);
   //   };
 
-  const handleAddSectionModal = () => {
+  const handleAddSectionModal = async () => {
     setaddSectionModal(true);
+    try {
+      const response = fetch(
+        "https://fldemo.fivelumenstest.com/api/auth/coaching-forms/all?isActive=true",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+          },
+          body: JSON.stringify(),
+        }
+      );
+      const data = await response.json();
+      console.log("API Response:", data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+    try {
+      const response = fetch(
+        "https://fldemo.fivelumenstest.com/api/auth/groups/all",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+          },
+          body: JSON.stringify(),
+        }
+      );
+      const data = await response.json();
+      console.log("API Response:", data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
