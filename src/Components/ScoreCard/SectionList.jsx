@@ -129,7 +129,6 @@ const SectionList = ({
                     onClick={() => toggleMenu(section.id)}
                   >
                     <span className="text-xl font-bold">⋮</span>
-                   
                   </button>
 
                   {openMenuId === section.id && (

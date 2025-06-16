@@ -1,7 +1,16 @@
 import Button from "../ButtonComponent/Button";
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-const ScoreCardModal = ({ show, onClose, onSubmit, initialData, isEdit }) => {
+const ScoreCardModal = ({
+  show,
+  onClose,
+  onSubmit,
+  initialData,
+  isEdit,
+  isView,
+  shouldNavigate = true, // Default to true
+  title = "Begin Coaching Session", // default title
+}) => {
   const [isChecked, setIsChecked] = useState(false);
   const handleCheckboxChange = (event) => {
     setIsChecked(event.target.checked);
@@ -41,9 +50,15 @@ const ScoreCardModal = ({ show, onClose, onSubmit, initialData, isEdit }) => {
     onClose();
     onSubmit(formData);
     localStorage.setItem("scorecardData", JSON.stringify(formData));
-
-    if (!isEdit) {
+    if (shouldNavigate) {
       navigate("/Quality/scorecard/edit", { state: { name: formData.name } });
+      formRef.current.reset();
+    } else {
+      // just close the modal
+      onClose();
+    }
+    if (isEdit) {
+      navigate("/Quality/scorecard");
       formRef.current.reset();
     }
 
@@ -111,9 +126,7 @@ const ScoreCardModal = ({ show, onClose, onSubmit, initialData, isEdit }) => {
       <div className="bg-white p-6 rounded-xl max-w-max  mt-32">
         <div className="form-header flex justify-between">
           <div className="text">
-            <h2 className="text-xl font-semibold mb-4">
-              Begin Coaching Session
-            </h2>
+            <h2 className="text-xl font-semibold mb-4">{title}</h2>
             <p>Select the criteria below to begin a coaching session</p>
           </div>
           <div className="btn bg-white p-3 items-start text-gray-900 rounded-full shadow-lg h-10">
@@ -133,6 +146,7 @@ const ScoreCardModal = ({ show, onClose, onSubmit, initialData, isEdit }) => {
               value={formData.name}
               onChange={handleChange}
               required
+              readOnly={isView}
             />{" "}
           </div>
 
@@ -151,6 +165,7 @@ const ScoreCardModal = ({ show, onClose, onSubmit, initialData, isEdit }) => {
               value={formData.description}
               onChange={handleChange}
               required
+              readOnly={isView}
             />
           </div>
           <div className="flex justify-between gap-2 w-full">
