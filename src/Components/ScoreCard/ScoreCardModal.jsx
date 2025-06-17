@@ -1,8 +1,7 @@
 import Button from "../ButtonComponent/Button";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const generateId = () => Date.now().toString();
 const ScoreCardModal = ({
   show,
   onClose,
@@ -21,26 +20,50 @@ const ScoreCardModal = ({
 
   const [formData, setFormData] = useState(
     initialData || {
-      id: generateId(),
       title: "",
       description: "",
       managerVisible: false,
       emailNotification: false,
-      group: "",
+      groups: "",
       allgroup: false,
       evaluationType: "",
       scoringModel: "",
       coachingform: "",
     }
   );
-  useEffect(() => {
-    if (show && !initialData) {
-      setFormData((prev) => ({ ...prev, id: generateId() }));
-    }
-    if (show && initialData) {
-      setFormData({ ...initialData, id: initialData.id || generateId() });
-    }
-  }, [show, initialData]);
+
+  // const getAllData = async () => {
+  //   try {
+  //     console.log("getdata");
+  //     const response = await fetch(
+  //       "https://fldemo.fivelumenstest.com/api/auth/groups/all",
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           authorization:
+  //             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+  //         },
+  //         body: JSON.stringify(),
+  //       }
+  //     );
+  //     console.log(response);
+  //     const data = await response.json();
+  //     // See response in browser console
+  //     console.log("API Response:", data);
+  //   } catch (error) {
+  //     console.error("API Error:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (show && !initialData) {
+  //     setFormData((prev) => ({ ...prev, id: generateId() }));
+  //   }
+  //   if (show && initialData) {
+  //     setFormData({ ...initialData, id: initialData.id || generateId() });
+  //   }
+  // }, [show, initialData]);
 
   const formRef = useRef(null);
   if (!show) return null;
@@ -54,8 +77,32 @@ const ScoreCardModal = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const handleAll = async () => {
+      try {
+        const response = await fetch(
+          "https://fldemo.fivelumenstest.com/api/auth/groups/all",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+            },
+            body: JSON.stringify(),
+          }
+        );
+        const data = await response.json();
+        console.log(data);
+
+        // See response in browser console
+        console.log("API Response:", data);
+      } catch (error) {
+        console.error("API Error:", error);
+      }
+    };
+    handleAll();
     try {
-      console.log("helo");
+      console.log("hello");
       const response = await fetch(
         "https://fldemo.fivelumenstest.com/api/auth/scorecards/add",
         {
@@ -79,9 +126,9 @@ const ScoreCardModal = ({
     onClose();
     onSubmit(formData);
     // localStorage.setItem("scorecardData", JSON.stringify(formData));
-    if (shouldNavigate && formData.id) {
-      navigate(`/Quality/scorecard/edit?form=${formData.id}`, {
-        state: { name: formData.name },
+    if (shouldNavigate) {
+      navigate(`/Quality/scorecard/edit?form=${formData.title}`, {
+        state: { title: formData.title },
       });
       formRef.current.reset();
     } else {
@@ -159,7 +206,7 @@ const ScoreCardModal = ({
               onChange={handleChange}
               required
               readOnly={isView}
-            />{" "}
+            />
           </div>
 
           <div>
@@ -198,27 +245,27 @@ const ScoreCardModal = ({
                 Groups :
               </label>
               <select
-                id="group"
-                name="group"
+                id="groups"
+                name="groups"
                 className="w-full border border-gray-300 p-2 rounded"
-                value={formData.group}
+                value={formData.groups}
                 onChange={handleChange}
                 required
               >
                 <option value="" className="text-gray-600">
                   Select Groups
                 </option>
-                <option>Select All</option>
-                <option>Guatemala City</option>
-                <option>Guatemala </option>
-                <option>Guatemala 1</option>
-                <option>Guatemala 2</option>
-                <option>Guatemala 3</option>
-                <option>Guatemala 4</option>
+                <option value="">Select All</option>
+                <option vlaue="Guatemala City 1">Guatemala City 1</option>
+                <option vlaue="Guatemala City 2">Guatemala City 2</option>
+                <option vlaue="Guatemala City 3">Guatemala City 3</option>
+                <option vlaue="Guatemala City 4">Guatemala City 4</option>
+                <option vlaue="Guatemala City 5">Guatemala City 5</option>
+                <option vlaue="Guatemala City 6">Guatemala City 6</option>
               </select>
-              {!formData.group && (
+              {!formData.groups && (
                 <p className="text-red-700 ml-2">this field is required</p>
-              )}{" "}
+              )}
             </div>
           )}
 

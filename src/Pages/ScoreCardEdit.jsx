@@ -82,9 +82,9 @@ const ScoreCardEdit = () => {
   const [editFormData, setEditFormData] = useState(null);
   const { id } = useParams();
   const location = useLocation();
-  const name =
-    location.state?.name ||
-    localStorage.getItem("scorecardName") ||
+  const title =
+    location.state?.title ||
+    localStorage.getItem("scorecardtitle") ||
     "Default Scorecard Name";
   //state for the setting modal
   // ...existing code...
@@ -538,7 +538,7 @@ const ScoreCardEdit = () => {
           <div className="flex justify-between flex-row items-center">
             <div className="left basis-2/4 p-2">
               <div>
-                <h1 className="text-black font-bold text-2xl">{name}</h1>
+                <h1 className="text-black font-bold text-2xl">{title}</h1>
 
                 <p className="font-sans font-normal text-gray-600">
                   Design your scorecard by adding or removing different meta
