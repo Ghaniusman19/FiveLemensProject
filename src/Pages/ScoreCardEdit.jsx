@@ -12,6 +12,72 @@ import AddSectionModal from "../Components/ScoreCard/AddSectionModal";
 import SectionList from "../Components/ScoreCard/SectionList";
 
 const ScoreCardEdit = () => {
+  useEffect(() => {
+    const handleAll = async () => {
+      try {
+        const response = fetch(
+          "https://fldemo.fivelumenstest.com/api/auth/groups/all",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+            },
+            body: JSON.stringify(),
+          }
+        );
+        const data = await response.json();
+        console.log("API Response:", data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+    handleAll();
+    const handleActive = async () => {
+      try {
+        const response = fetch(
+          "https://fldemo.fivelumenstest.com/api/auth/coaching-forms/all?isActive=true",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+            },
+            body: JSON.stringify(),
+          }
+        );
+        const data = await response.json();
+        console.log("API Response:", data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+    handleActive();
+
+    const handleScoreCardEdit = async () => {
+      try {
+        const response = fetch(
+          "https://fldemo.fivelumenstest.com/api/auth/scorecards/edit",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              authorization:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+            },
+            body: JSON.stringify(),
+          }
+        );
+        const data = await response.json();
+        console.log("API Response:", data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+    handleScoreCardEdit();
+  }, []);
   const [showScoreCardModal, setShowScoreCardModal] = useState(false);
   const [editFormData, setEditFormData] = useState(null);
   const { id } = useParams();

@@ -4,12 +4,14 @@ import { Plus, Search, SlidersHorizontal } from "lucide-react";
 
 const ScoreCardHeader = () => {
   const [addSectionModal, setaddSectionModal] = useState(false);
+  const [checkBoxModal, setCheckBoxModal] = useState(false);
   // This is for CheckBox
   // const [isChecked, setIsChecked] = useState(false);
   const [checkedItems, setCheckedItems] = useState({}); // Object to store checked states
 
   const handleCheckboxChange = (event) => {
     // setIsChecked(event.target.checked);
+    setCheckBoxModal(true);
     const { name, checked } = event.target;
     setCheckedItems((prevItems) => ({
       ...prevItems,
@@ -30,40 +32,9 @@ const ScoreCardHeader = () => {
     setSearchItem(searchTerm);
   };
 
-  // useEffect(() => {
-  //   localStorage.setItem("My Data", JSON.stringify(allFormData));
-  // }, [allFormData]);
   const handleFormSubmit = async (newFormData) => {
     setAllformData([...allFormData, newFormData]);
-    try {
-      const response = await fetch(
-        "https://fldemo.fivelumenstest.com/api/auth/scorecards",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
-          },
-          body: JSON.stringify(newFormData),
-        }
-      );
-      const data = await response.json();
-      // See response in browser console
-      console.log("API Response:", data);
-    } catch (error) {
-      console.error("API Error:", error);
-    }
   };
-  // This is to remove data or i mean remove full list array of data
-  // const removeData = (index) => {
-  //   const updatedData = allFormData.filter((_, i) => i !== index);
-  //   setAllformData(updatedData);
-  // };
-  //   const removeData = (index) => {
-  //     const updatedData = allFormData.filter((_, item) => item !== index);
-  //     setAllformData(updatedData);
-  //   };
 
   //state for the opening and closing of the dropdown clicked on the 3 dots in scoreheader.jsx
   const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
@@ -87,50 +58,60 @@ const ScoreCardHeader = () => {
   const [editFormData, setEditFormData] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
   const [cloneModalOpen, setCloneModalOpen] = useState(false);
+
   const handleEditFormSubmit = (updatedData) => {
     setAllformData((prev) =>
       prev.map((item, idx) => (idx === editIndex ? updatedData : item))
     );
     setEditModalOpen(false);
   };
+
   const handleAddSectionModal = async () => {
     setaddSectionModal(true);
-    try {
-      const response = fetch(
-        "https://fldemo.fivelumenstest.com/api/auth/coaching-forms/all?isActive=true",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
-          },
-          body: JSON.stringify(),
-        }
-      );
-      const data = await response.json();
-      console.log("API Response:", data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-    try {
-      const response = fetch(
-        "https://fldemo.fivelumenstest.com/api/auth/groups/all",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
-          },
-          body: JSON.stringify(),
-        }
-      );
-      const data = await response.json();
-      console.log("API Response:", data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+ const handleActive = async () => {
+      try {
+        const response = fetch(
+          "https://fldemo.fivelumenstest.com/api/auth/coaching-forms/all?isActive=true",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+            },
+            body: JSON.stringify(),
+          }
+        );
+        const data = await response.json();
+        console.log("API Response:", data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+    handleActive(); 
+    
+    const handleAll = async () => {
+      try {
+        const response = fetch(
+          "https://fldemo.fivelumenstest.com/api/auth/groups/all",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+            },
+            body: JSON.stringify(),
+          }
+        );
+        const data = await response.json();
+        console.log("API Response:", data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+    handleAll();
+  
   };
 
   return (
@@ -169,7 +150,7 @@ const ScoreCardHeader = () => {
               className="rounded-xl py-2 flex items-center gap-2 px-3 bg-blue-600 text-white"
               onClick={handleAddSectionModal}
             >
-              <Plus className="w-4 h-4 text-white " /> Add ScoreCard
+              <Plus className="w-4 h-4 text-white" /> Add ScoreCard
             </button>
           </div>
         </div>
@@ -218,9 +199,9 @@ const ScoreCardHeader = () => {
             <div className=" flex mb-2 gap-4" key={index}>
               <li className="flex relative justify-between items-center w-full bg-gray-50 border border-gray-300 p-2 ">
                 <div>
-                  <p>{index} </p>
+                  <p className="text-blue-800">{index + 1}th Index </p>
                   <p> {data.name}</p>
-                  <p>{data.description}</p>
+                  <p className="font-light">{data.name}</p>
                 </div>
                 <div>
                   <p> {data.evaluationType}</p>
@@ -233,20 +214,29 @@ const ScoreCardHeader = () => {
                 </div>
                 <div>
                   <div>
-                    {" "}
                     <input
                       type="checkbox"
                       name={index}
-                      checked={checkedItems[index] || false}
+                      checked={checkedItems[index] || false} // Use the checked state from the object
                       onChange={handleCheckboxChange}
                       id=""
                     />{" "}
-                    <div className="relative h-max w-full">
+                    <div className=" h-max w-full bg-black">
                       {checkedItems[index] && (
                         <div>
-                          <p className="absolute z-50 h-max  min-w-28 p-2 bg-gray-200">
-                            Details for {data.name}.
-                          </p>
+                          {checkBoxModal && (
+                            <div className="transition-all  overflow-scroll duration-300 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                              <p className="bg-white p-6 rounded-xl max-w-max  font-bold mt-32">
+                                Details for {data.name}.
+                                <button
+                                  className="bg-blue-500 rounded-2xl text-white p-2"
+                                  onClick={() => setCheckBoxModal(false)}
+                                >
+                                  cancel
+                                </button>
+                              </p>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
