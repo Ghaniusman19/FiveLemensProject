@@ -4,7 +4,6 @@ import Container from "../Components/Container";
 import { useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import ScoreCardModal from "../Components/ScoreCard/ScoreCardModal";
-
 import { Settings } from "lucide-react";
 import { useState, useEffect } from "react";
 import EditCriteriaModal from "../Components/ScoreCard/EditCriteriaModal";
@@ -12,7 +11,6 @@ import EditSectionModal from "../Components/ScoreCard/EditSectionModal";
 import AddCriteriaModal from "../Components/ScoreCard/AddCriteriaModal";
 import AddSectionModal from "../Components/ScoreCard/AddSectionModal";
 import SectionList from "../Components/ScoreCard/SectionList";
-
 const ScoreCardEdit = () => {
   useEffect(() => {
     const handleAll = async () => {
@@ -24,7 +22,7 @@ const ScoreCardEdit = () => {
             headers: {
               "Content-Type": "application/json",
               authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
             },
             body: JSON.stringify(),
           }
@@ -45,7 +43,7 @@ const ScoreCardEdit = () => {
             headers: {
               "Content-Type": "application/json",
               authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
             },
             body: JSON.stringify(),
           }
@@ -66,8 +64,8 @@ const ScoreCardEdit = () => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+              Authorization:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
             },
             body: JSON.stringify(),
           }
@@ -120,7 +118,7 @@ const ScoreCardEdit = () => {
           headers: {
             "Content-Type": "application/json",
             authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
           },
           body: JSON.stringify(), // or use id if available
         }
@@ -512,23 +510,6 @@ const ScoreCardEdit = () => {
             show={showScoreCardModal}
             onClose={() => setShowScoreCardModal(false)}
             onSubmit={(formData) => {
-              // Call your update API here
-              // fetch("https://fldemo.fivelumenstest.com/api/auth/scorecards", {
-              //   method: "POST",
-              //   headers: {
-              //     "Content-Type": "application/json",
-              //     authorization:
-              //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
-              //   },
-              //   body: JSON.stringify(formData),
-              // })
-              //   .then((res) => res.json())
-              //   .then((updated) => {
-              //     setSettingsFormData(updated);
-              //     localStorage.setItem("scorecardName", updated.name);
-              //     setShowScoreCardModal(false);
-              //     window.location.reload();
-              //   });
               localStorage.setItem("scorecardData", JSON.stringify(formData));
               setShowScoreCardModal(false);
             }}
@@ -880,44 +861,6 @@ const ScoreCardEdit = () => {
                   }
                 />
               )}
-
-            {/* {JSON.stringify(formData, null, 2)} */}
-            {/* <h2>Submitted Coaching Form Data:</h2> */}
-            {/* <div>
-        {allFormData.length > 0 && (
-          <ul className="">
-            <div className="flex justify-between p-2">
-              <h3 className="font-bold">Name</h3>
-              <h3 className="font-bold">Description</h3>
-              <h3 className="font-bold">Group/s</h3>
-              <h3></h3>
-            </div>
-            {allFormData.map((data, index) => (
-              <div className=" flex mb-2 gap-4">
-                <li
-                  className="flex justify-between w-full bg-gray-50 border border-gray-300 px-2 "
-                  key={data.index}
-                >
-                  <div>
-                    <p> {data.name}</p>
-                  </div>
-                  <div>
-                    <p> {data.description}</p>
-                  </div>
-                  <div>
-                    <p> {data.groups}</p>
-                  </div>
-                  <Button
-                    className="p-2 rounded-xl bg-blue-600 text-white "
-                    label="Close"
-                    onClick={() => removeData(index)}
-                  />
-                </li>
-              </div>
-            ))}
-          </ul>
-        )}
-      </div> */}
           </div>
         </div>
       </Container>

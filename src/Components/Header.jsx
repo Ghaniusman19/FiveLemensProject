@@ -28,7 +28,7 @@ const Header = () => {
       <Container>
         <header className="text-white flex justify-between items-center ">
           <div className="logo">
-            <img src="src/assets/fivelumens-logo.svg" alt="header Logo " />
+            <img src="/src/assets/fivelumens-logo.svg" alt="header Logo " />
           </div>
           <div className="user-description flex justify-between items-center cursor-pointer">
             <div className="user-email">
@@ -39,7 +39,7 @@ const Header = () => {
               className="user-img rounder-full relative w-10 h-10"
               onClick={toggleProfile}
             >
-              <img src="src/assets/lester-tester-img.png" alt="user Image " />
+              <img src="/src/assets/lester-tester-img.png" alt="user Image " />
               {profileMenu && (
                 <div
                   ref={profileMenuRef}

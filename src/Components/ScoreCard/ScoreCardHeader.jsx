@@ -71,7 +71,7 @@ const ScoreCardHeader = () => {
             headers: {
               "Content-Type": "application/json",
               authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
             },
             body: JSON.stringify(),
           }
@@ -94,7 +94,7 @@ const ScoreCardHeader = () => {
             headers: {
               "Content-Type": "application/json",
               authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
             },
             body: JSON.stringify(),
           }
@@ -111,7 +111,7 @@ const ScoreCardHeader = () => {
   // check API
   const handleAPI = async () => {
     try {
-      console.log("hey");
+      console.log("shah jahan");
       const response = await fetch(
         "https://fldemo.fivelumenstest.com/api/auth/groups/all",
         {
@@ -119,19 +119,15 @@ const ScoreCardHeader = () => {
           headers: {
             "Content-Type": "application/json",
             authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
           },
           body: JSON.stringify(),
         }
       );
       const data = await response.json();
-      setApiData(data); // Save the whole response or data.data[0].contents as needed
+      setApiData(data.data[0].scorecards); // Save the whole response or data.data[0].contents as needed
 
-      console.log(
-        "API Response:",
-        data.data.map((d) => d.title)
-      );
-      console.log("API Response:", data.data.map((d) => d._id));
+      console.log("API Response:", data.data[0].scorecards);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -328,12 +324,7 @@ const ScoreCardHeader = () => {
           ))}
         </ul>
       )}
-      {apiData?.data && (
-        <div>
-          <h4>API Contents:</h4>
-          <div>{apiData.data[0].contents[0]}</div>
-        </div>
-      )}
+      {apiData && <div>{apiData.title}</div>}
     </div>
   );
 };

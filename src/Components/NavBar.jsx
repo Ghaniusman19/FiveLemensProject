@@ -79,7 +79,6 @@ const NavBar = () => {
               onMouseEnter={() => setqualityDropdown(true)}
               onMouseLeave={() => setqualityDropdown(false)}
             >
-              {" "}
               <Link>Quality &#129171;</Link>
               {qualityDropdown && (
                 <ul className="absolute  text-[#2A362B]  top-12 z-10 rounded-md bg-white p-2 shadow-xl  w-[178px]">

@@ -2,33 +2,6 @@ import Button from "../ButtonComponent/Button";
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const availableGroups = [
-  "Guatemala City 1",
-  "Guatemala City 2",
-  "Guatemala City 3",
-  "Guatemala City 4",
-  "Guatemala City 5",
-  "Guatemala City 6",
-  "Guatemala City 7",
-  "Guatemala City 8",
-  "Guatemala City 9",
-  "Guatemala City 10",
-  "Guatemala City 11",
-  "Guatemala City 12",
-  "Guatemala City 13",
-  "Guatemala City 14",
-  "Guatemala City 15",
-  "Guatemala City 16",
-  "Guatemala City 17",
-  "Guatemala City 18",
-  "Guatemala City 19",
-  "Guatemala City 20",
-  "Guatemala City 21",
-  "Guatemala City 22",
-  "Guatemala City 23",
-  "Guatemala City 24",
-];
-
 const ScoreCardModal = ({
   show,
   onClose,
@@ -45,10 +18,11 @@ const ScoreCardModal = ({
       const response = await fetch(
         "https://fldemo.fivelumenstest.com/api/auth/groups/all",
         {
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
             authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
           },
         }
       );
@@ -56,7 +30,26 @@ const ScoreCardModal = ({
       setGroups(data.data); // or setGroups(data.groups) if your API returns { groups: [...] }
     };
     fetchGroups();
+    const fetchCoachingForms = async () => {
+      const response = await fetch(
+        "https://fldemo.fivelumenstest.com/api/auth/coaching-forms/all?isActive=true",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+          },
+        }
+      );
+      const data = await response.json();
+      setCoachingForms(data.data);
+    };
+
+    fetchCoachingForms();
   }, []);
+  const [coachingForms, setCoachingForms] = useState([]);
+
   const [isChecked, setIsChecked] = useState(false);
   const [showGroupDropdown, setShowGroupDropdown] = useState(false);
 
@@ -69,13 +62,13 @@ const ScoreCardModal = ({
     initialData || {
       title: "",
       description: "",
-      managerVisible: false,
-      emailNotification: false,
+      visibleToManagers: false,
+      coachingPurposeOnly: false,
       groups: [],
       allgroup: false,
       evaluationType: "",
       scoringModel: "",
-      coachingform: "",
+      coachingForm: "",
     }
   );
   const formRef = useRef(null);
@@ -111,7 +104,7 @@ const ScoreCardModal = ({
             headers: {
               "Content-Type": "application/json",
               authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
             },
             body: JSON.stringify(),
           }
@@ -135,7 +128,7 @@ const ScoreCardModal = ({
           headers: {
             "Content-Type": "application/json",
             authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
           },
           body: JSON.stringify(formData),
         }
@@ -164,7 +157,6 @@ const ScoreCardModal = ({
       navigate("/Quality/scorecard");
       formRef.current.reset();
     }
-
     // try {
     //   const response = await fetch(
     //     "https://fldemo.fivelumenstest.com/api/auth/profile",
@@ -281,8 +273,11 @@ const ScoreCardModal = ({
                 >
                   <span className="overflow-hidden ">
                     {formData.groups.length > 0
-                      ? formData.groups
-                          .map((g) => (typeof g === "string" ? g : g.title))
+                      ? groups
+                          .filter((group) =>
+                            formData.groups.includes(group._id)
+                          )
+                          .map((group) => group.title)
                           .join(", ")
                       : "Select Groups"}
                   </span>
@@ -313,22 +308,14 @@ const ScoreCardModal = ({
                       >
                         <input
                           type="checkbox"
-                          checked={formData.groups.some((g) =>
-                            typeof g === "string"
-                              ? g === group.title
-                              : g.title === group.title
-                          )}
+                          checked={formData.groups.includes(group._id)}
                           onChange={(e) => {
                             const checked = e.target.checked;
                             setFormData((prev) => ({
                               ...prev,
                               groups: checked
-                                ? [...prev.groups, group.title]
-                                : prev.groups.filter((g) =>
-                                    typeof g === "string"
-                                      ? g !== group.title
-                                      : g.title !== group.title
-                                  ),
+                                ? [...prev.groups, group._id]
+                                : prev.groups.filter((id) => id !== group._id),
                             }));
                           }}
                         />
@@ -359,9 +346,11 @@ const ScoreCardModal = ({
               onChange={handleChange}
               required
             >
-              <option className="text-gray-600">Manual</option>
-              <option>Manual</option>
-              <option>AI</option>
+              <option value="" className="text-gray-600">
+                Manual
+              </option>
+              <option value="manual">Manual</option>
+              <option value="ai">AI</option>
             </select>
           </div>
           {/* SCORING MODEL INPUTS */}
@@ -383,55 +372,58 @@ const ScoreCardModal = ({
               <option value="" className="text-gray-600">
                 select sccoring model
               </option>
-              <option>Weighted</option>
-              <option>Equall</option>
-              <option>Selective Audit </option>
-              <option>Audit</option>
+              <option value="weighted">Weighted</option>
+              <option value="equal">Equall</option>
+              <option value="selective audit">Selective Audit </option>
+              <option value="audit">Audit</option>
             </select>
           </div>
 
           {/* COACHING FORM */}
           <div>
             <label
-              htmlFor="coachingform"
+              htmlFor="coachingForm"
               className="text-gray-950 font-semibold"
             >
               Coaching Form :
             </label>
             <select
-              id="coachingform"
-              name="coachingform"
+              id="coachingForm"
+              name="coachingForm"
               className="w-full border border-gray-300 p-2 rounded"
-              value={formData.coachingform}
+              value={formData.coachingForm}
               onChange={handleChange}
               required
             >
               <option value="" className="text-gray-600">
                 Coaching Form
               </option>
-              <option> Weekly Performance View</option>
-              <option>One to one</option>
+              {coachingForms.map((form) => (
+                <option key={form._id} value={form._id}>
+                  {form.title}
+                </option>
+              ))}
             </select>
           </div>
           <p className="text-gray-600">Additional Setting</p>
           <div className="flex justify-between gap-2 w-full">
-            <label htmlFor="managerVisible">Visible to manager Only</label>
+            <label htmlFor="visibleToManagers">Visible to manager Only</label>
             <input
-              id="managerVisible"
+              id="visibleToManagers"
               type="checkbox"
-              name="managerVisible"
-              value={formData.managerVisible}
+              name="visibleToManagers"
+              value={formData.visibleToManagers}
               onChange={handleChange}
               required
             />
           </div>
           <div className="flex justify-between gap-2 w-full">
-            <label htmlFor="emailNotification">Email Notification</label>
+            <label htmlFor="coachingPurposeOnly">Email Notification</label>
             <input
-              id="emailNotification"
+              id="coachingPurposeOnly"
               type="checkbox"
-              name="emailNotification"
-              value={formData.emailNotification}
+              name="coachingPurposeOnly"
+              value={formData.coachingPurposeOnly}
               onChange={handleChange}
               required
             />
