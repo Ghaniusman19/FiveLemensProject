@@ -52,8 +52,7 @@ const ScoreCardHeader = () => {
   const [editFormData, setEditFormData] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
   const [cloneModalOpen, setCloneModalOpen] = useState(false);
-
-  //data coming from API STORED IN THE STATE VARIABLE
+  //data coming from api stoed in state variables....
   const [apiData, setApiData] = useState(null);
   const handleEditFormSubmit = (updatedData) => {
     setAllformData((prev) =>
@@ -128,7 +127,11 @@ const ScoreCardHeader = () => {
       const data = await response.json();
       setApiData(data); // Save the whole response or data.data[0].contents as needed
 
-      console.log("API Response:", data.data[0]);
+      console.log(
+        "API Response:",
+        data.data.map((d) => d.title)
+      );
+      console.log("API Response:", data.data.map((d) => d._id));
     } catch (error) {
       console.error("Error:", error);
     }
@@ -225,8 +228,8 @@ const ScoreCardHeader = () => {
               <li className="flex relative justify-between items-center w-full bg-gray-50 border border-gray-300 p-2 ">
                 <div>
                   <p className="text-blue-800">{index + 1}th Index </p>
-                  <p> {data.name}</p>
-                  <p className="font-light">{data.name}</p>
+                  <p> {data.title}</p>
+                  <p className="font-light">{data.title}</p>
                 </div>
                 <div>
                   <p> {data.evaluationType}</p>
@@ -245,14 +248,14 @@ const ScoreCardHeader = () => {
                       checked={checkedItems[index] || false} // Use the checked state from the object
                       onChange={handleCheckboxChange}
                       id=""
-                    />{" "}
+                    />
                     <div className=" h-max w-full bg-black">
                       {checkedItems[index] && (
                         <div>
                           {checkBoxModal && (
                             <div className="transition-all  overflow-scroll duration-300 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                               <p className="bg-white p-6 rounded-xl max-w-max  font-bold mt-32">
-                                Details for {data.name}.
+                                Details for {data.title}.
                                 <button
                                   className="bg-blue-500 rounded-2xl text-white p-2"
                                   onClick={() => setCheckBoxModal(false)}
@@ -331,43 +334,6 @@ const ScoreCardHeader = () => {
           <div>{apiData.data[0].contents[0]}</div>
         </div>
       )}
-      {/* {JSON.stringify(formData, null, 2)} */}
-      {/* <h2>Submitted Coaching Form Data:</h2> */}
-      {/* <div>
-        {allFormData.length > 0 && (
-          <ul className="">
-            <div className="flex justify-between p-2">
-              <h3 className="font-bold">Name</h3>
-              <h3 className="font-bold">Description</h3>
-              <h3 className="font-bold">Group/s</h3>
-              <h3></h3>
-            </div>
-            {allFormData.map((data, index) => (
-              <div className=" flex mb-2 gap-4">
-                <li
-                  className="flex justify-between w-full bg-gray-50 border border-gray-300 px-2 "
-                  key={data.index}
-                >
-                  <div>
-                    <p> {data.name}</p>
-                  </div>
-                  <div>
-                    <p> {data.description}</p>
-                  </div>
-                  <div>
-                    <p> {data.groups}</p>
-                  </div>
-                  <Button
-                    className="p-2 rounded-xl bg-blue-600 text-white "
-                    label="Close"
-                    onClick={() => removeData(index)}
-                  />
-                </li>
-              </div>
-            ))}
-          </ul>
-        )}
-      </div> */}
     </div>
   );
 };

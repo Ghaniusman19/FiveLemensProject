@@ -1,6 +1,33 @@
 import Button from "../ButtonComponent/Button";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+const availableGroups = [
+  "Guatemala City 1",
+  "Guatemala City 2",
+  "Guatemala City 3",
+  "Guatemala City 4",
+  "Guatemala City 5",
+  "Guatemala City 6",
+  "Guatemala City 7",
+  "Guatemala City 8",
+  "Guatemala City 9",
+  "Guatemala City 10",
+  "Guatemala City 11",
+  "Guatemala City 12",
+  "Guatemala City 13",
+  "Guatemala City 14",
+  "Guatemala City 15",
+  "Guatemala City 16",
+  "Guatemala City 17",
+  "Guatemala City 18",
+  "Guatemala City 19",
+  "Guatemala City 20",
+  "Guatemala City 21",
+  "Guatemala City 22",
+  "Guatemala City 23",
+  "Guatemala City 24",
+];
 
 const ScoreCardModal = ({
   show,
@@ -12,7 +39,27 @@ const ScoreCardModal = ({
   shouldNavigate = true, // Default to true
   title = "Begin Coaching Session", // default title
 }) => {
+  const [groups, setGroups] = useState([]);
+  useEffect(() => {
+    const fetchGroups = async () => {
+      const response = await fetch(
+        "https://fldemo.fivelumenstest.com/api/auth/groups/all",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            authorization:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+          },
+        }
+      );
+      const data = await response.json();
+      setGroups(data.data); // or setGroups(data.groups) if your API returns { groups: [...] }
+    };
+    fetchGroups();
+  }, []);
   const [isChecked, setIsChecked] = useState(false);
+  const [showGroupDropdown, setShowGroupDropdown] = useState(false);
+
   const handleCheckboxChange = (event) => {
     setIsChecked(event.target.checked);
   };
@@ -24,55 +71,33 @@ const ScoreCardModal = ({
       description: "",
       managerVisible: false,
       emailNotification: false,
-      groups: "",
+      groups: [],
       allgroup: false,
       evaluationType: "",
       scoringModel: "",
       coachingform: "",
     }
   );
-
-  // const getAllData = async () => {
-  //   try {
-  //     console.log("getdata");
-  //     const response = await fetch(
-  //       "https://fldemo.fivelumenstest.com/api/auth/groups/all",
-  //       {
-  //         method: "GET",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           authorization:
-  //             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
-  //         },
-  //         body: JSON.stringify(),
-  //       }
-  //     );
-  //     console.log(response);
-  //     const data = await response.json();
-  //     // See response in browser console
-  //     console.log("API Response:", data);
-  //   } catch (error) {
-  //     console.error("API Error:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (show && !initialData) {
-  //     setFormData((prev) => ({ ...prev, id: generateId() }));
-  //   }
-  //   if (show && initialData) {
-  //     setFormData({ ...initialData, id: initialData.id || generateId() });
-  //   }
-  // }, [show, initialData]);
-
   const formRef = useRef(null);
   if (!show) return null;
+
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    const { name, value, type, checked, multiple, options } = e.target;
+
+    if (multiple) {
+      const selectedOptions = Array.from(options)
+        .filter((option) => option.selected)
+        .map((option) => option.value);
+      setFormData((prev) => ({
+        ...prev,
+        [name]: selectedOptions,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -193,7 +218,11 @@ const ScoreCardModal = ({
           </div>
         </div>
         <hr />
-        <form className="space-y-2" onSubmit={handleSubmit} ref={formRef}>
+        <form
+          className="space-y-2 w-96 overflow-y-auto"
+          onSubmit={handleSubmit}
+          ref={formRef}
+        >
           <div>
             <label htmlFor="name" className="text-gray-950 font-semibold">
               Name :
@@ -244,27 +273,73 @@ const ScoreCardModal = ({
               <label htmlFor="group" className="text-gray-950 font-semibold">
                 Groups :
               </label>
-              <select
-                id="groups"
-                name="groups"
-                className="w-full border border-gray-300 p-2 rounded"
-                value={formData.groups}
-                onChange={handleChange}
-                required
-              >
-                <option value="" className="text-gray-600">
-                  Select Groups
-                </option>
-                <option value="">Select All</option>
-                <option vlaue="Guatemala City 1">Guatemala City 1</option>
-                <option vlaue="Guatemala City 2">Guatemala City 2</option>
-                <option vlaue="Guatemala City 3">Guatemala City 3</option>
-                <option vlaue="Guatemala City 4">Guatemala City 4</option>
-                <option vlaue="Guatemala City 5">Guatemala City 5</option>
-                <option vlaue="Guatemala City 6">Guatemala City 6</option>
-              </select>
-              {!formData.groups && (
-                <p className="text-red-700 ml-2">this field is required</p>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowGroupDropdown(!showGroupDropdown)}
+                  className="w-full border border-gray-300 p-2 rounded text-left bg-white flex justify-between items-center"
+                >
+                  <span className="overflow-hidden ">
+                    {formData.groups.length > 0
+                      ? formData.groups
+                          .map((g) => (typeof g === "string" ? g : g.title))
+                          .join(", ")
+                      : "Select Groups"}
+                  </span>
+                  <svg
+                    className={`w-4 h-4 transform transition-transform duration-200 ${
+                      showGroupDropdown ? "rotate-180" : "rotate-0"
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+
+                {showGroupDropdown && (
+                  <div className="absolute z-10 bg-white border border-gray-300 mt-1 rounded p-2 w-full max-h-48 overflow-y-auto">
+                    {groups.map((group) => (
+                      <label
+                        key={group._id}
+                        className="flex items-center space-x-2 p-1"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.groups.some((g) =>
+                            typeof g === "string"
+                              ? g === group.title
+                              : g.title === group.title
+                          )}
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            setFormData((prev) => ({
+                              ...prev,
+                              groups: checked
+                                ? [...prev.groups, group.title]
+                                : prev.groups.filter((g) =>
+                                    typeof g === "string"
+                                      ? g !== group.title
+                                      : g.title !== group.title
+                                  ),
+                            }));
+                          }}
+                        />
+                        <span>{group.title}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {formData.groups.length === 0 && (
+                <p className="text-red-700 ml-2">This field is required</p>
               )}
             </div>
           )}
@@ -376,6 +451,13 @@ const ScoreCardModal = ({
               {isEdit ? "Update" : "Add"}
             </button>
           </div>
+          {/* <ul>
+            {groups.map((group) => (
+              <li key={group._id} className="bg-blue-200">
+                {group.title} || {group._id}
+              </li>
+            ))}
+          </ul> */}
         </form>
       </div>
     </div>
