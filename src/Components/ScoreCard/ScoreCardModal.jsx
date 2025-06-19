@@ -57,7 +57,6 @@ const ScoreCardModal = ({
     setIsChecked(event.target.checked);
   };
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState(
     initialData || {
       title: "",
@@ -199,7 +198,7 @@ const ScoreCardModal = ({
 
   return (
     <div className="transition-all  overflow-scroll duration-300 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-xl max-w-max  mt-32">
+      <div className="bg-white p-6 rounded-xl max-w-max mt-32">
         <div className="form-header flex justify-between">
           <div className="text">
             <h2 className="text-xl font-semibold mb-4">{title}</h2>

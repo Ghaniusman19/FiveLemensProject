@@ -5,7 +5,6 @@ const ScoreCardHeader = () => {
   const [addSectionModal, setaddSectionModal] = useState(false);
   const [checkBoxModal, setCheckBoxModal] = useState(false);
   const [scorecards, setScorecards] = useState([]);
-
   // This is for CheckBox
   // const [isChecked, setIsChecked] = useState(false);
   const [checkedItems, setCheckedItems] = useState({}); // Object to store checked states
@@ -48,11 +47,9 @@ const ScoreCardHeader = () => {
           headers: {
             "Content-Type": "application/json",
             authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0", // Replace with your actual token
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
           },
-          body: JSON.stringify({
-            // Add any required body parameters here, or leave empty if not needed
-          }),
+          body: JSON.stringify({}),
         }
       );
       const result = await response.json();
@@ -155,7 +152,7 @@ const ScoreCardHeader = () => {
       const data = await response.json();
       setApiData(data.data); // Save the whole response or data.data[0].contents as needed
 
-      console.log("API Response:", data.data[0].description);
+      console.log("API Response:", data.data);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -247,14 +244,7 @@ const ScoreCardHeader = () => {
             <h3 className="font-bold">Status</h3>
             <h3 className="font-bold"></h3>
           </div>
-          {/* <div>
-            <h2>Scorecards</h2>
-            <ul>
-              {scorecards.map((item) => (
-                <li key={item._id}>{item.title}</li>
-              ))}
-            </ul>
-          </div> */}
+
           {scorecards.map((item, index) => (
             <div className=" flex mb-2 gap-4" key={index}>
               <li className="flex relative justify-between items-center w-full bg-gray-50 border border-gray-300 p-2 ">
@@ -270,7 +260,7 @@ const ScoreCardHeader = () => {
                   <p> {item.scoringModel}</p>
                 </div>
                 <div>
-                  <p> {new Date(item.updatedAt).toLocaleString()}</p>
+                  <p> {new Date(item.updatedAt).toLocaleDateString()}</p>
                 </div>
                 <div>
                   <p>{item.isActive} </p>
@@ -318,7 +308,7 @@ const ScoreCardHeader = () => {
                         <button
                           className="w-full text-left px-4 py-2 hover:bg-gray-100"
                           onClick={() => {
-                            setViewFormData(data);
+                            setViewFormData();
                             setViewModalOpen(true);
                             setOpenDropdownIndex(null); // close dropdown
                           }}
@@ -330,7 +320,7 @@ const ScoreCardHeader = () => {
                         <button
                           className="w-full text-left px-4 py-2 hover:bg-gray-100"
                           onClick={() => {
-                            setEditFormData(data);
+                            setEditFormData();
                             setEditIndex(index);
                             setEditModalOpen(true);
                             setOpenDropdownIndex(null); // close dropdown
@@ -373,8 +363,6 @@ const ScoreCardHeader = () => {
           ))}
         </div>
       )}
-
-      {/* //////////// */}
     </div>
   );
 };
