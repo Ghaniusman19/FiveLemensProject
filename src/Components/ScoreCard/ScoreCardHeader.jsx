@@ -4,6 +4,8 @@ import { Plus, Search, SlidersHorizontal } from "lucide-react";
 const ScoreCardHeader = () => {
   const [addSectionModal, setaddSectionModal] = useState(false);
   const [checkBoxModal, setCheckBoxModal] = useState(false);
+  const [scorecards, setScorecards] = useState([]);
+
   // This is for CheckBox
   // const [isChecked, setIsChecked] = useState(false);
   const [checkedItems, setCheckedItems] = useState({}); // Object to store checked states
@@ -36,6 +38,32 @@ const ScoreCardHeader = () => {
   const handleDropdownToggle = (index) => {
     setOpenDropdownIndex((prev) => (prev === index ? null : index));
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(
+        "https://fldemo.fivelumenstest.com/api/auth/scorecards",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0", // Replace with your actual token
+          },
+          body: JSON.stringify({
+            // Add any required body parameters here, or leave empty if not needed
+          }),
+        }
+      );
+      const result = await response.json();
+      if (result && result.data && result.data.collection) {
+        setScorecards(result.data.collection);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest(".dropdown-menu")) {
@@ -111,9 +139,9 @@ const ScoreCardHeader = () => {
   // check API
   const handleAPI = async () => {
     try {
-      console.log("shah jahan");
+      console.log("checked..");
       const response = await fetch(
-        "https://fldemo.fivelumenstest.com/api/auth/groups/all",
+        "https://fldemo.fivelumenstest.com/api/auth/coaching-forms/all?isActive=true",
         {
           method: "GET",
           headers: {
@@ -125,9 +153,9 @@ const ScoreCardHeader = () => {
         }
       );
       const data = await response.json();
-      setApiData(data.data[0].scorecards); // Save the whole response or data.data[0].contents as needed
+      setApiData(data.data); // Save the whole response or data.data[0].contents as needed
 
-      console.log("API Response:", data.data[0].scorecards);
+      console.log("API Response:", data.data[0].description);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -219,22 +247,33 @@ const ScoreCardHeader = () => {
             <h3 className="font-bold">Status</h3>
             <h3 className="font-bold"></h3>
           </div>
-          {allFormData.map((data, index) => (
+          {/* <div>
+            <h2>Scorecards</h2>
+            <ul>
+              {scorecards.map((item) => (
+                <li key={item._id}>{item.title}</li>
+              ))}
+            </ul>
+          </div> */}
+          {scorecards.map((item, index) => (
             <div className=" flex mb-2 gap-4" key={index}>
               <li className="flex relative justify-between items-center w-full bg-gray-50 border border-gray-300 p-2 ">
                 <div>
-                  <p className="text-blue-800">{index + 1}th Index </p>
-                  <p> {data.title}</p>
-                  <p className="font-light">{data.title}</p>
+                  <p className="text-blue-800">{item._id}</p>
+                  <p> {item.title}</p>
+                  <p className="font-light">{item.title}</p>
                 </div>
                 <div>
-                  <p> {data.evaluationType}</p>
+                  <p> {item.evaluationType}</p>
                 </div>
                 <div>
-                  <p> {data.scoringModel}</p>
+                  <p> {item.scoringModel}</p>
                 </div>
                 <div>
-                  <p> {data.scoringModel}</p>
+                  <p> {new Date(item.updatedAt).toLocaleString()}</p>
+                </div>
+                <div>
+                  <p>{item.isActive} </p>
                 </div>
                 <div>
                   <div>
@@ -324,7 +363,18 @@ const ScoreCardHeader = () => {
           ))}
         </ul>
       )}
-      {apiData && <div>{apiData.title}</div>}
+      {apiData && (
+        <div>
+          {apiData.map((m) => (
+            <div>
+              {m._id} || {m.createdAt}
+              <p> {m.title} </p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* //////////// */}
     </div>
   );
 };
