@@ -13,6 +13,7 @@ const ScoreCardModal = ({
   title = "Begin Coaching Session", // default title
 }) => {
   const [groups, setGroups] = useState([]);
+  const [URL, setURL] = useState("");
   useEffect(() => {
     const fetchGroups = async () => {
       const response = await fetch(
@@ -70,6 +71,11 @@ const ScoreCardModal = ({
       coachingForm: "",
     }
   );
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
   const formRef = useRef(null);
   if (!show) return null;
 
@@ -92,6 +98,31 @@ const ScoreCardModal = ({
     }
   };
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const newVar = {
+        ...formData,
+        id: initialData._id, // or data._id, depending on API response
+      };
+      const response = await fetch(
+        "https://fldemo.fivelumenstest.com/api/auth/scorecards/update/settings",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+          },
+          body: JSON.stringify(newVar),
+        }
+      );
+      console.log("My response from Add Api", response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const handleAll = async () => {
@@ -109,10 +140,10 @@ const ScoreCardModal = ({
           }
         );
         const data = await response.json();
-        console.log(data);
+        console.log(" usman acha hai", data);
 
         // See response in browser console
-        console.log("API Response:", data);
+        console.log("API response from get:", data);
       } catch (error) {
         console.error("API Error:", error);
       }
@@ -132,68 +163,42 @@ const ScoreCardModal = ({
           body: JSON.stringify(formData),
         }
       );
-      console.log(response);
-      const data = await response.json();
+      console.log("My response from Add Api", response);
+      const result = await response.json();
       // See response in browser console
-      console.log("API Response:", data);
+      console.log("API Response from data222:", result);
+      const createdId = result?.data?._id;
+      console.log(createdId);
+      console.log("ye hum hazir hwe", result.data);
+      setURL(createdId);
+      if (shouldNavigate) {
+        console.log("our url is ", URL);
+        navigate(`/Quality/scorecard/edit?form=${createdId}`);
+        formRef.current.reset();
+      } else {
+        // just close the modal
+        onClose();
+      }
     } catch (error) {
       console.error("API Error:", error);
     }
     console.log("Form Data:", formData);
     onClose();
     onSubmit(formData);
-    // localStorage.setItem("scorecardData", JSON.stringify(formData));
-    if (shouldNavigate) {
-      navigate(`/Quality/scorecard/edit?form=${formData.title}`, {
-        state: { title: formData.title },
-      });
-      formRef.current.reset();
-    } else {
-      // just close the modal
-      onClose();
-    }
+
     if (isEdit) {
       navigate("/Quality/scorecard");
       formRef.current.reset();
     }
-    // try {
-    //   const response = await fetch(
-    //     "https://fldemo.fivelumenstest.com/api/auth/profile",
-    //     {
-    //       method: "GET",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         authorization:
-    //           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
-    //       },
-    //       body: JSON.stringify(),
-    //     }
-    //   );
-    //   const data = await response.json();
-    //   // See response in browser console
-    //   console.log("API Response:", data);
-    // } catch (error) {
-    //   console.error("API Error:", error);
-    // }
-    // try {
-    //   const response = await fetch(
-    //     "https://fldemo.fivelumenstest.com/api/domain-check",
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         authorization:
-    //           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
-    //       },
-    //       body: JSON.stringify(),
-    //     }
-    //   );
-    //   const data = await response.json();
-    //   // See response in browser console
-    //   console.log("API Response:", data);
-    // } catch (error) {
-    //   console.error("API Error:", error);
-    // }
+  };
+
+  const handleForm = (e) => {
+    if (isEdit === true) {
+      handleUpdate(e);
+      onClose();
+    } else {
+      handleSubmit(e);
+    }
   };
 
   return (
@@ -211,7 +216,7 @@ const ScoreCardModal = ({
         <hr />
         <form
           className="space-y-2 w-96 overflow-y-auto"
-          onSubmit={handleSubmit}
+          onSubmit={handleForm}
           ref={formRef}
         >
           <div>
@@ -271,7 +276,8 @@ const ScoreCardModal = ({
                   className="w-full border border-gray-300 p-2 rounded text-left bg-white flex justify-between items-center"
                 >
                   <span className="overflow-hidden ">
-                    {formData.groups.length > 0
+                    {Array.isArray(formData.groups) &&
+                    formData.groups.length > 0
                       ? groups
                           .filter((group) =>
                             formData.groups.includes(group._id)
@@ -324,9 +330,6 @@ const ScoreCardModal = ({
                   </div>
                 )}
               </div>
-              {formData.groups.length === 0 && (
-                <p className="text-red-700 ml-2">This field is required</p>
-              )}
             </div>
           )}
 
@@ -442,13 +445,6 @@ const ScoreCardModal = ({
               {isEdit ? "Update" : "Add"}
             </button>
           </div>
-          {/* <ul>
-            {groups.map((group) => (
-              <li key={group._id} className="bg-blue-200">
-                {group.title} || {group._id}
-              </li>
-            ))}
-          </ul> */}
         </form>
       </div>
     </div>

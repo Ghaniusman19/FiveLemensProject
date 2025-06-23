@@ -3,19 +3,26 @@ import { useState, useEffect } from "react";
 import { Plus, Search, SlidersHorizontal } from "lucide-react";
 const ScoreCardHeader = () => {
   const [addSectionModal, setaddSectionModal] = useState(false);
-  const [checkBoxModal, setCheckBoxModal] = useState(false);
+  // const [checkBoxModal, setCheckBoxModal] = useState(false);
   const [scorecards, setScorecards] = useState([]);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [pendingValue, setPendingValue] = useState(null); // true or false
   // This is for CheckBox
   // const [isChecked, setIsChecked] = useState(false);
   const [checkedItems, setCheckedItems] = useState({}); // Object to store checked states
-  const handleCheckboxChange = (event) => {
-    // setIsChecked(event.target.checked);
-    setCheckBoxModal(true);
-    const { name, checked } = event.target;
-    setCheckedItems((prevItems) => ({
-      ...prevItems,
-      [name]: checked, // Update the checked state for the specific checkbox
-    }));
+  const updateCheckboxValue = (item, value) => {
+    setScorecards((prev) =>
+      prev.map((sc) =>
+        sc._id === item._id ? { ...sc, visibleToManagers: value } : sc
+      )
+    );
+    // Optionally, update on backend here
+  };
+  const handleCheckboxClick = (item) => {
+    setSelectedItem(item);
+    setPendingValue(!item.visibleToManagers); // The value we want to set
+    setConfirmModalOpen(true);
   };
   const [allFormData, setAllformData] = useState(() => {
     const storedArray = localStorage.getItem("allFormData");
@@ -77,6 +84,7 @@ const ScoreCardHeader = () => {
   const [editFormData, setEditFormData] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
   const [cloneModalOpen, setCloneModalOpen] = useState(false);
+  const [evaluateModalOpen, setevaluateModalOpen] = useState(false);
   //data coming from api stoed in state variables....
   const [apiData, setApiData] = useState(null);
   const handleEditFormSubmit = (updatedData) => {
@@ -204,35 +212,58 @@ const ScoreCardHeader = () => {
           </div>
         </div>
 
-        <ScoreCardModal
-          show={addSectionModal}
-          onClose={() => setaddSectionModal(false)}
-          onSubmit={handleFormSubmit}
-          shouldNavigate={true} // <-- This form should NOT navigate
-        />
-        <ScoreCardModal
-          show={viewModalOpen}
-          onClose={() => setViewModalOpen(false)}
-          initialData={viewFormData}
-          isView={true} // pass a prop to indicate view mode
-          shouldNavigate={true} // <-- This form should NOT navigate
-          title="View Scorecard"
-        />
-        <ScoreCardModal
-          show={editModalOpen}
-          onClose={() => setEditModalOpen(false)}
-          initialData={editFormData}
-          onSubmit={(updatedData) => handleEditFormSubmit(updatedData)}
-          shouldNavigate={false} // <-- This form should NOT navigate
-          title="Edit Scorecard"
-        />
-        <ScoreCardModal
-          show={cloneModalOpen}
-          onClose={() => setCloneModalOpen(false)}
-          onSubmit={handleFormSubmit}
-          shouldNavigate={true}
-          title="Clone Scorecard"
-        />
+        {/* Conditionally Render Modals Below */}
+        {addSectionModal && (
+          <ScoreCardModal
+            show={true}
+            onClose={() => setaddSectionModal(false)}
+            onSubmit={handleFormSubmit}
+            shouldNavigate={true}
+            title="Add Scorecard"
+          />
+        )}
+
+        {viewModalOpen && (
+          <ScoreCardModal
+            show={true}
+            onClose={() => setViewModalOpen(false)}
+            initialData={viewFormData}
+            isView={true}
+            shouldNavigate={true}
+            title="View Scorecard"
+          />
+        )}
+
+        {editModalOpen && (
+          <ScoreCardModal
+            show={true}
+            onClose={() => setEditModalOpen(false)}
+            initialData={editFormData}
+            onSubmit={(updatedData) => handleEditFormSubmit(updatedData)}
+            shouldNavigate={false}
+            isEdit={true}
+            title="Edit Scorecard"
+          />
+        )}
+
+        {cloneModalOpen && (
+          <ScoreCardModal
+            show={true}
+            onClose={() => setCloneModalOpen(false)}
+            onSubmit={handleFormSubmit}
+            shouldNavigate={true}
+            title="Clone Scorecard"
+          />
+        )}
+        {evaluateModalOpen && (
+          <ScoreCardModal
+            show={true}
+            onClose={() => setevaluateModalOpen(false)}
+            onSubmit={handleFormSubmit}
+            shouldNavigate={true}
+            title="Evaluate Scorecard"
+          />
+        )}
       </div>
       {allFormData.length > 0 && (
         <ul className="">
@@ -263,15 +294,15 @@ const ScoreCardHeader = () => {
                   <p> {new Date(item.updatedAt).toLocaleDateString()}</p>
                 </div>
                 <div>
-                  <p>{item.isActive} </p>
+                  <p>{item.visibleToManagers} </p>
                 </div>
                 <div>
                   <div>
                     <input
                       type="checkbox"
                       name={index}
-                      checked={checkedItems[index] || false} // Use the checked state from the object
-                      onChange={handleCheckboxChange}
+                      checked={checkedItems[index] || item.visibleToManagers} // Use the checked state from the object
+                      onChange={() => handleCheckboxClick(item)}
                       id=""
                     />
                     <div className=" h-max w-full bg-black">
@@ -308,7 +339,7 @@ const ScoreCardHeader = () => {
                         <button
                           className="w-full text-left px-4 py-2 hover:bg-gray-100"
                           onClick={() => {
-                            setViewFormData();
+                            setViewFormData(item);
                             setViewModalOpen(true);
                             setOpenDropdownIndex(null); // close dropdown
                           }}
@@ -320,8 +351,7 @@ const ScoreCardHeader = () => {
                         <button
                           className="w-full text-left px-4 py-2 hover:bg-gray-100"
                           onClick={() => {
-                            setEditFormData();
-                            setEditIndex(index);
+                            setEditFormData(item);
                             setEditModalOpen(true);
                             setOpenDropdownIndex(null); // close dropdown
                           }}
@@ -341,7 +371,14 @@ const ScoreCardHeader = () => {
                         </button>
                       </li>
                       <li>
-                        <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
+                        <button
+                          className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                          onClick={() => {
+                            setOpenDropdownIndex(null);
+                            setevaluateModalOpen(true);
+                            setViewFormData(item);
+                          }}
+                        >
                           Evaluate
                         </button>
                       </li>
@@ -361,6 +398,22 @@ const ScoreCardHeader = () => {
               <p> {m.title} </p>
             </div>
           ))}
+        </div>
+      )}
+      {confirmModalOpen && (
+        <div className="modal">
+          <p>
+            Do you want to {pendingValue ? "check" : "uncheck"} this checkbox?
+          </p>
+          <button
+            onClick={() => {
+              updateCheckboxValue(selectedItem, pendingValue);
+              setConfirmModalOpen(false);
+            }}
+          >
+            Yes
+          </button>
+          <button onClick={() => setConfirmModalOpen(false)}>No</button>
         </div>
       )}
     </div>
