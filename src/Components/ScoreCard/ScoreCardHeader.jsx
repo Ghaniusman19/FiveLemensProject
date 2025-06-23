@@ -3,13 +3,10 @@ import { useState, useEffect } from "react";
 import { Plus, Search, SlidersHorizontal } from "lucide-react";
 const ScoreCardHeader = () => {
   const [addSectionModal, setaddSectionModal] = useState(false);
-  // const [checkBoxModal, setCheckBoxModal] = useState(false);
   const [scorecards, setScorecards] = useState([]);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [pendingValue, setPendingValue] = useState(null); // true or false
-  // This is for CheckBox
-  // const [isChecked, setIsChecked] = useState(false);
   const [checkedItems, setCheckedItems] = useState({}); // Object to store checked states
   const updateCheckboxValue = (item, value) => {
     setScorecards((prev) =>
@@ -17,7 +14,6 @@ const ScoreCardHeader = () => {
         sc._id === item._id ? { ...sc, visibleToManagers: value } : sc
       )
     );
-    // Optionally, update on backend here
   };
   const handleCheckboxClick = (item) => {
     setSelectedItem(item);
@@ -305,6 +301,53 @@ const ScoreCardHeader = () => {
                       onChange={() => handleCheckboxClick(item)}
                       id=""
                     />
+                    {confirmModalOpen && (
+                      <div className="modal transition-all overflow-scroll duration-300 fixed inset-0 bg-gray-600 bg-opacity-5 flex items-center justify-center z-50">
+                        <div className="modal-inner bg-white p-5 w-96 rounded-2xl">
+                          <h2 className="text-center font-semibold">
+                            {" "}
+                            Deactivate Scorecard
+                          </h2>
+                          <p className="font-gray text-center">
+                            Changing the{" "}
+                            <span className="font-semibold text-gray-700">
+                              {" "}
+                              {selectedItem.title}{" "}
+                            </span>
+                            scorecard status to inactive will not delete the
+                            scorecard, but evaluations can no longer be created
+                            using this scorecard until it is reactivated. Do you
+                            want to &nbsp; this checkbox?
+                          </p>
+                          <p className="text-center">
+                            Are you sure you want to{" "}
+                            {pendingValue ? "check" : "uncheck"} the scorecard
+                            status to inactive?
+                          </p>
+                          <div className="flex gap-2 mt-3 ">
+                            <button
+                              className="w-full text-center px-4 py-2 bg-white text-gray-700 border rounded-2xl"
+                              onClick={() => {
+                                setConfirmModalOpen(false);
+                              }}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              className="w-full text-center px-4 py-2  bg-yellow-500 text-white rounded-2xl"
+                              onClick={() => {
+                                updateCheckboxValue(selectedItem, pendingValue);
+                                setConfirmModalOpen(false);
+                              }}
+                            >
+                              {selectedItem.visibleToManagers
+                                ? "DeActivate"
+                                : "Activate"}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <div className=" h-max w-full bg-black">
                       {checkedItems[index] && (
                         <div>
@@ -398,22 +441,6 @@ const ScoreCardHeader = () => {
               <p> {m.title} </p>
             </div>
           ))}
-        </div>
-      )}
-      {confirmModalOpen && (
-        <div className="modal">
-          <p>
-            Do you want to {pendingValue ? "check" : "uncheck"} this checkbox?
-          </p>
-          <button
-            onClick={() => {
-              updateCheckboxValue(selectedItem, pendingValue);
-              setConfirmModalOpen(false);
-            }}
-          >
-            Yes
-          </button>
-          <button onClick={() => setConfirmModalOpen(false)}>No</button>
         </div>
       )}
     </div>

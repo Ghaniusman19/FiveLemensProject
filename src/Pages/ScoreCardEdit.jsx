@@ -1,5 +1,3 @@
-//  ye 1 page hai
-
 import Container from "../Components/Container";
 import { useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -85,7 +83,7 @@ const ScoreCardEdit = () => {
   const title =
     location.state?.title ||
     localStorage.getItem("scorecardtitle") ||
-    "Default Scorecard Name";
+    " Scorecard ";
   //state for the setting modal
   // ...existing code...
   // const [settingsFormData, setSettingsFormData] = useState({
@@ -138,23 +136,17 @@ const ScoreCardEdit = () => {
   const [formData, setFormData] = useState({});
   const [sections, setSections] = useState([]);
   const [editingSectionId, setEditingSectionId] = useState(null);
-
   // drag and drop
-  //
-
   const handleMetaDragStart = (e, index) => {
     e.dataTransfer.setData("itemIndex", index);
   };
-
   const handleMetaDrop = (e, dropIndex) => {
     e.preventDefault();
     const draggedIndex = parseInt(e.dataTransfer.getData("itemIndex"), 10);
     if (draggedIndex === dropIndex) return;
-
     const updatedItems = [...sections];
     const [draggedItem] = updatedItems.splice(draggedIndex, 1);
     updatedItems.splice(dropIndex, 0, draggedItem);
-
     setSections(updatedItems);
   };
   //
@@ -174,7 +166,6 @@ const ScoreCardEdit = () => {
     setSections1(updatedItems);
   };
   //drag and drop
-
   //criteria drag and drop
   const handleReorderCriteria = (sectionId, fromIndex, toIndex) => {
     setSections1((sections) =>
@@ -187,18 +178,14 @@ const ScoreCardEdit = () => {
       })
     );
   };
-  //
-
   // section drag and drop
   const handleSectionDragStart = (e, index) => {
     e.dataTransfer.setData("sectionIndex", index);
   };
-
   const handleSectionDrop = (e, dropIndex) => {
     e.preventDefault();
     const draggedIndex = parseInt(e.dataTransfer.getData("sectionIndex"), 10);
     if (draggedIndex === dropIndex) return;
-
     // Don't allow reordering the Total Possible Points section
     const totalPointsSection = section1.find(
       (section) => section.name === "Total Possible Points"
@@ -206,16 +193,11 @@ const ScoreCardEdit = () => {
     const otherSections = section1.filter(
       (section) => section.name !== "Total Possible Points"
     );
-
     const updatedSections = [...otherSections];
     const [draggedSection] = updatedSections.splice(draggedIndex, 1);
     updatedSections.splice(dropIndex, 0, draggedSection);
-
     setSections1([...updatedSections, totalPointsSection]);
   };
-
-  //
-
   //comments
   const [section1, setSections1] = useState([]);
   const [showAddSectionModal, setShowAddSectionModal] = useState(false);
@@ -227,7 +209,6 @@ const ScoreCardEdit = () => {
     useState(null);
   const [currentCriteria, setCurrentCriteria] = useState(null);
   const [showAddMenu, setShowAddMenu] = useState(false);
-
   // handle update criteria value
   const handleUpdateCriteriaValue = (sectionId, criteriaId, newValue) => {
     setSections1((sections) =>
@@ -251,7 +232,6 @@ const ScoreCardEdit = () => {
       { id: "1", name: "Total Possible Points", criteria: [], value: 0 },
     ]);
   }, []);
-
   // Close dropdowns and modals when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -260,7 +240,6 @@ const ScoreCardEdit = () => {
         setShowAddMenu(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -307,7 +286,6 @@ const ScoreCardEdit = () => {
     }
     setSections1(section1.filter((section) => section.id !== id));
   };
-
   const handleAddCriteria = (criteriaName) => {
     if (currentSectionForCriteria) {
       setSections1(
@@ -326,7 +304,6 @@ const ScoreCardEdit = () => {
     }
     setShowAddCriteriaModal(false);
   };
-
   const handleEditCriteria = (sectionId, criteriaId, newName) => {
     setSections1(
       section1.map((section) =>
@@ -344,7 +321,6 @@ const ScoreCardEdit = () => {
     );
     setShowEditCriteriaModal(false);
   };
-
   const handleDeleteCriteria = (sectionId, criteriaId) => {
     setSections1(
       section1.map((section) =>
@@ -359,7 +335,6 @@ const ScoreCardEdit = () => {
       )
     );
   };
-
   //comments
 
   // Forms configuration (different for each button)
@@ -422,10 +397,8 @@ const ScoreCardEdit = () => {
     setIsDropdownOpen(false); // Close dropdown
     setActiveModal(formKey); // Open specific modal
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-
     fetch(`/api/scorecards/${id}`, {
       method: "POST", // or "PUT" for editing
       headers: { "Content-Type": "application/json" },
@@ -488,11 +461,9 @@ const ScoreCardEdit = () => {
       setFormData({ ...formData, [name]: value });
     }
   };
-
   const handleDeleteSection = (id) => {
     setSections(sections.filter((section) => section.id !== id));
   };
-
   const handleEditSection = (id) => {
     const sectionToEdit = sections.find((section) => section.id === id);
     setFormData(sectionToEdit.data);
@@ -501,7 +472,6 @@ const ScoreCardEdit = () => {
     );
     setEditingSectionId(id); // Track which section is being edited
   };
-
   return (
     <div>
       <Container>
