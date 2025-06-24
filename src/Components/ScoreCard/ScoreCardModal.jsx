@@ -125,6 +125,7 @@ const ScoreCardModal = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    localStorage.setItem("scorecardtitle", formData.title);
     const handleAll = async () => {
       try {
         const response = await fetch(

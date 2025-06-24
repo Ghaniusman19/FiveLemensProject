@@ -117,11 +117,10 @@ const SectionList = ({
                   )
                 }
               </div>
-
               {/* Only show the menu for sections other than "Total Possible Points" */}
               {!isTotalPointsSection(section) && (
                 <div
-                  className="relative "
+                  className="relative"
                   ref={(el) => (menuRefs.current[section.id] = el)}
                 >
                   <button

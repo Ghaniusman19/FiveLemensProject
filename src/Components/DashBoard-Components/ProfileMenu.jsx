@@ -1,11 +1,15 @@
 import React from "react";
 import ViewProfileModal from "./ViewProfileModal";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 const ProfileMenu = () => {
   const [showProfileModal, setshowProfileModal] = useState(false);
   // const [reminders, setReminders] = useState([]);
-
+ const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
   const handleProfile = async () => {
     setshowProfileModal(true);
       try {
@@ -73,7 +77,12 @@ const ProfileMenu = () => {
       <hr />
       <div className="logout py-2">
         <div>
-          <p> Logout </p>
+            <button
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
+              onClick={handleLogout}
+            >
+              Log Out
+            </button>
         </div>
       </div>
     </div>

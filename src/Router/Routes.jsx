@@ -13,23 +13,164 @@ import Evaluation from "../Pages/Evaluation";
 import Reports from "../Pages/Reports";
 import Export from "../Pages/Export";
 import APIs from "../Pages/APIs";
+import Login from "../Pages/Login";
+import PrivateRoute from "../Components/PrivateRoute";
+import SignUp from "../Pages/SignUp";
 import ScoreCardEdit from "../Pages/ScoreCardEdit";
+import { Edit } from "lucide-react";
 export const route = [
-  { path: "/", element: <DashBoard /> },
-  { path: "/dashboard", element: <DashBoard /> },
-  { path: "/organization/roles", element: <Roles /> },
-  { path: "/organization/groups", element: <Groups /> },
-  { path: "/organization/teams", element: <Teams /> },
-  { path: "/organization/users", element: <Users /> },
-  { path: "/organization/orgtrees", element: <OrgTrees /> },
-  { path: "/coaching/forms", element: <Forms /> },
-  { path: "/coaching/session", element: <Session /> },
-  { path: "/Quality/scorecard", element: <ScoreCard /> },
-  { path: "/Quality/scorecard/edit", element: <ScoreCardEdit /> },
-  { path: "/coaching/performanceplan", element: <PerformancePlan /> },
-  { path: "/Quality/evaluation", element: <Evaluation /> },
-  { path: "/Quality/promptlibrary", element: <PromptLibrary /> },
-  { path: "/reporting/reports", element: <Reports /> },
-  { path: "/reporting/export", element: <Export /> },
-  { path: "/reporting/APIs", element: <APIs /> },
+  {
+    path: "/",
+    element: <Login />,
+    isPublic: true,
+  },
+  {
+    path: "/signup",
+    element: <SignUp />,
+    isPublic: true,
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <DashBoard />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/organization/roles",
+    element: (
+      <PrivateRoute>
+        <Roles />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/organization/groups",
+    element: (
+      <PrivateRoute>
+        <Groups />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/organization/teams",
+    element: (
+      <PrivateRoute>
+        <Teams />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/organization/users",
+    element: (
+      <PrivateRoute>
+        <Users />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/organization/orgtrees",
+    element: (
+      <PrivateRoute>
+        <OrgTrees />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/coaching/forms",
+    element: (
+      <PrivateRoute>
+        <Forms />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/coaching/session",
+    element: (
+      <PrivateRoute>
+        <Session />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/Quality/scorecard",
+    element: (
+      <PrivateRoute>
+        <ScoreCard />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/Quality/scorecard/edit",
+    element: (
+      <PrivateRoute>
+        <ScoreCardEdit />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/coaching/performanceplan",
+    element: (
+      <PrivateRoute>
+        <PerformancePlan />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/Quality/evaluation",
+    element: (
+      <PrivateRoute>
+        <Evaluation />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/Quality/promptlibrary",
+    element: (
+      <PrivateRoute>
+        <PromptLibrary />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/reporting/reports",
+    element: (
+      <PrivateRoute>
+        <Reports />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/reporting/export",
+    element: (
+      <PrivateRoute>
+        <Export />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
+  {
+    path: "/reporting/APIs",
+    element: (
+      <PrivateRoute>
+        <APIs />
+      </PrivateRoute>
+    ),
+    isPublic: false,
+  },
 ];

@@ -84,19 +84,7 @@ const ScoreCardEdit = () => {
     location.state?.title ||
     localStorage.getItem("scorecardtitle") ||
     " Scorecard ";
-  //state for the setting modal
-  // ...existing code...
-  // const [settingsFormData, setSettingsFormData] = useState({
-  //   name: "",
-  //   description: "",
-  //   managerVisible: false,
-  //   emailNotification: false,
-  //   groups: "",
-  //   allgroup: false,
-  //   evaluationType: "",
-  //   scoringModel: "",
-  //   coachingform: "",
-  // });
+
   // ...inside ScoreCardEdit component...
   const handleSettingsClick = async () => {
     // setEditFormData(settingsFormData); // or fetch latest if needed

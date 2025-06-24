@@ -7,7 +7,6 @@ const ScoreCardHeader = () => {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [pendingValue, setPendingValue] = useState(null); // true or false
-  const [checkedItems, setCheckedItems] = useState({}); // Object to store checked states
   const updateCheckboxValue = (item, value) => {
     setScorecards((prev) =>
       prev.map((sc) =>
@@ -297,14 +296,14 @@ const ScoreCardHeader = () => {
                     <input
                       type="checkbox"
                       name={index}
-                      checked={checkedItems[index] || item.visibleToManagers} // Use the checked state from the object
+                      checked={item.visibleToManagers} // Use the checked state from the object
                       onChange={() => handleCheckboxClick(item)}
                       id=""
                     />
                     {confirmModalOpen && (
                       <div className="modal transition-all overflow-scroll duration-300 fixed inset-0 bg-gray-600 bg-opacity-5 flex items-center justify-center z-50">
                         <div className="modal-inner bg-white p-5 w-96 rounded-2xl">
-                          <h2 className="text-center font-semibold">
+                          <h2 className="text-center  text-xl font-semibold">
                             {" "}
                             Deactivate Scorecard
                           </h2>
@@ -317,7 +316,12 @@ const ScoreCardHeader = () => {
                             scorecard status to inactive will not delete the
                             scorecard, but evaluations can no longer be created
                             using this scorecard until it is reactivated. Do you
-                            want to &nbsp; this checkbox?
+                            want to{" "}
+                            {selectedItem.visibleToManagers
+                              ? "unCheck"
+                              : "Check"}{" "}
+                            {""}
+                            this checkbox?
                           </p>
                           <p className="text-center">
                             Are you sure you want to{" "}
@@ -348,7 +352,7 @@ const ScoreCardHeader = () => {
                         </div>
                       </div>
                     )}
-                    <div className=" h-max w-full bg-black">
+                    {/* <div className=" h-max w-full bg-black">
                       {checkedItems[index] && (
                         <div>
                           {checkBoxModal && (
@@ -366,7 +370,7 @@ const ScoreCardHeader = () => {
                           )}
                         </div>
                       )}
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 <button
@@ -433,7 +437,7 @@ const ScoreCardHeader = () => {
           ))}
         </ul>
       )}
-      {apiData && (
+      {/* {apiData && (
         <div>
           {apiData.map((m) => (
             <div>
@@ -442,7 +446,7 @@ const ScoreCardHeader = () => {
             </div>
           ))}
         </div>
-      )}
+      )} */}
     </div>
   );
 };
