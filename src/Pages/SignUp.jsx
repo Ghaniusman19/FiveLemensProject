@@ -10,7 +10,7 @@ const SignUp = () => {
   const [country, setcountry] = useState("");
   const [phone, setphone] = useState("");
   const [domain, setdomain] = useState("");
-  const [passsword , setpassword] = useState("")
+  const [passsword, setpassword] = useState("");
   const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
@@ -24,7 +24,7 @@ const SignUp = () => {
     formData.append("country", country);
     formData.append("phone", phone);
     formData.append("domain", domain);
-    formData.append("password" , passsword);
+    formData.append("password", passsword);
 
     try {
       const response = await fetch(
@@ -74,7 +74,7 @@ const SignUp = () => {
         className="bg-white shadow-lg rounded-xl px-10 py-8 w-full max-w-md"
       >
         <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
-          Sign Up
+          Sign Up to FiveLumens
         </h2>
 
         <div className="mb-4">
@@ -194,7 +194,7 @@ const SignUp = () => {
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
-          <div className="mb-4">
+        <div className="mb-4">
           <label className="block text-gray-700 font-semibold mb-2">
             Passsword
           </label>

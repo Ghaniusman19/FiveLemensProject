@@ -57,7 +57,7 @@ const Login = () => {
         className="bg-white shadow-lg rounded-xl px-10 py-8 w-full max-w-md"
       >
         <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
-          Login
+          Login into FiveLumens
         </h2>
         {/* <button
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
