@@ -14,6 +14,7 @@ const ScoreCardModal = ({
 }) => {
   const [groups, setGroups] = useState([]);
   const [URL, setURL] = useState("");
+  const authtoken = localStorage.getItem("token");
   useEffect(() => {
     const fetchGroups = async () => {
       const response = await fetch(
@@ -22,8 +23,7 @@ const ScoreCardModal = ({
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+            authorization: authtoken,
           },
         }
       );
@@ -38,8 +38,7 @@ const ScoreCardModal = ({
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+            authorization: authtoken,
           },
         }
       );
@@ -111,8 +110,7 @@ const ScoreCardModal = ({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+            authorization: authtoken,
           },
           body: JSON.stringify(newVar),
         }
@@ -134,8 +132,7 @@ const ScoreCardModal = ({
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+              authorization: authtoken,
             },
             body: JSON.stringify(),
           }
@@ -158,8 +155,7 @@ const ScoreCardModal = ({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+            authorization: authtoken,
           },
           body: JSON.stringify(formData),
         }

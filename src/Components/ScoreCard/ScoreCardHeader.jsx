@@ -7,6 +7,8 @@ const ScoreCardHeader = () => {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [pendingValue, setPendingValue] = useState(null); // true or false
+
+  const authtoken = localStorage.getItem("token");
   const updateCheckboxValue = (item, value) => {
     setScorecards((prev) =>
       prev.map((sc) =>
@@ -48,8 +50,7 @@ const ScoreCardHeader = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+            authorization: authtoken,
           },
           body: JSON.stringify({}),
         }
@@ -98,8 +99,7 @@ const ScoreCardHeader = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+              authorization: authtoken,
             },
             body: JSON.stringify(),
           }
@@ -121,8 +121,7 @@ const ScoreCardHeader = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+              authorization: authtoken,
             },
             body: JSON.stringify(),
           }
@@ -146,8 +145,7 @@ const ScoreCardHeader = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+            authorization: authtoken,
           },
           body: JSON.stringify(),
         }

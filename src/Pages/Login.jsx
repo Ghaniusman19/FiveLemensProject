@@ -13,6 +13,8 @@ const Login = () => {
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
+    //append means to combine with the formData
+    //formData is a built-in object in JavaScript that allows you to collect form data and send it to a server.
     try {
       const response = await fetch(
         "https://fldemo.fivelumenstest.com/api/login",
@@ -31,14 +33,14 @@ const Login = () => {
         setError(data.message || "Login failed");
       }
     } catch (err) {
-      setError("Network error");
+      setError("Network error" + err);
     }
   };
 
-  const checkAPI = async () => {
+  const ForgetPassword = async () => {
     try {
       const response = await fetch(
-        "https://fldemo.fivelumenstest.com/api/signup",
+        "https://fldemo.fivelumenstest.com/api/domain-check",
         {
           method: "POST",
           body: JSON.stringify(),
@@ -46,6 +48,13 @@ const Login = () => {
       );
       const data = await response.json();
       console.log(" data is :", data);
+
+      if (response.ok) {
+        // localStorage.setItem("token", data.data.email);
+        navigate("/forget-password");
+      } else {
+        setError(data.message || "Login failed");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -59,13 +68,7 @@ const Login = () => {
         <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
           Login into FiveLumens
         </h2>
-        {/* <button
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
-          onClick={checkAPI}
-        >
-          {" "}
-          Check API{" "}
-        </button> */}
+
         <div className="mb-4">
           <label className="block text-gray-700 font-semibold mb-2">
             Email
@@ -109,6 +112,12 @@ const Login = () => {
         </div>
         <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200">
           <Link to={"/signup"}> sign Up </Link>{" "}
+        </button>
+        <button
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200 mt-3 "
+          onClick={ForgetPassword}
+        >
+          Forget Password
         </button>
       </form>
     </div>

@@ -4,23 +4,36 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const ProfileMenu = () => {
   const [showProfileModal, setshowProfileModal] = useState(false);
+  const authToken = localStorage.getItem("token");
   // const [reminders, setReminders] = useState([]);
- const navigate = useNavigate();
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      localStorage.removeItem("token");
+      navigate("/");
+      const response = await fetch(
+        "https://fldemo.fivelumenstest.com/api/domain-check",
+        {
+          method: "POST",
+        }
+      );
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
   const handleProfile = async () => {
     setshowProfileModal(true);
-      try {
+    try {
       const response = await fetch(
         "https://fldemo.fivelumenstest.com/api/auth/profile",
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NDg5NDQxNzQsImV4cCI6MTc1MDI0MDE3NH0.79wdRiFp6Cz2Og5ud_VJG4jNoOw7iND_olYfGkusZ8Q",
+            authorization: authToken,
           },
         }
       );
@@ -30,7 +43,6 @@ const ProfileMenu = () => {
     } catch (error) {
       console.error("API Error:", error);
     }
-
   };
 
   const handleSubmit = () => {
@@ -77,12 +89,12 @@ const ProfileMenu = () => {
       <hr />
       <div className="logout py-2">
         <div>
-            <button
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
-              onClick={handleLogout}
-            >
-              Log Out
-            </button>
+          <button
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
+            onClick={handleLogout}
+          >
+            Log Out
+          </button>
         </div>
       </div>
     </div>

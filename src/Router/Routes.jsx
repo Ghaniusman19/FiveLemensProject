@@ -17,8 +17,15 @@ import Login from "../Pages/Login";
 import PrivateRoute from "../Components/PrivateRoute";
 import SignUp from "../Pages/SignUp";
 import ScoreCardEdit from "../Pages/ScoreCardEdit";
+import NotFound from "../Pages/NotFound";
+import ForgetPassword from "../Pages/ForgetPassword";
 import { Edit } from "lucide-react";
 export const route = [
+  {
+    path : "/forget-password",
+    element: <ForgetPassword />,
+    isPublic: true,
+  },
   {
     path: "/",
     element: <Login />,
@@ -27,6 +34,11 @@ export const route = [
   {
     path: "/signup",
     element: <SignUp />,
+    isPublic: true,
+  },
+   {
+    path: "*",
+    element: <NotFound />,
     isPublic: true,
   },
   {

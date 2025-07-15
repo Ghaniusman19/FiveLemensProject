@@ -10,6 +10,8 @@ import AddCriteriaModal from "../Components/ScoreCard/AddCriteriaModal";
 import AddSectionModal from "../Components/ScoreCard/AddSectionModal";
 import SectionList from "../Components/ScoreCard/SectionList";
 const ScoreCardEdit = () => {
+  const authToken = localStorage.getItem("token");
+
   useEffect(() => {
     const handleAll = async () => {
       try {
@@ -19,8 +21,7 @@ const ScoreCardEdit = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+              authorization: authToken,
             },
             body: JSON.stringify(),
           }
@@ -40,8 +41,7 @@ const ScoreCardEdit = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+              authorization: authToken,
             },
             body: JSON.stringify(),
           }
@@ -62,8 +62,7 @@ const ScoreCardEdit = () => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+              Authorization: authToken,
             },
             body: JSON.stringify(),
           }
@@ -103,8 +102,7 @@ const ScoreCardEdit = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYyYzQ0MTUwMDhmNmZkMmE0MmUwNDNlOSJ9LCJpYXQiOjE3NTAyNDI4NjAsImV4cCI6MTc1MTUzODg2MH0.6gtI79oZ8U7xrzALzwRWr1X-Q3IVFf32wR0Jx44pBo0",
+            authorization: authToken,
           },
           body: JSON.stringify(), // or use id if available
         }

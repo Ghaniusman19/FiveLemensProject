@@ -12,7 +12,6 @@ const SignUp = () => {
   const [domain, setdomain] = useState("");
   const [passsword, setpassword] = useState("");
   const navigate = useNavigate();
-
   const handleSignUp = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -25,7 +24,6 @@ const SignUp = () => {
     formData.append("phone", phone);
     formData.append("domain", domain);
     formData.append("password", passsword);
-
     try {
       const response = await fetch(
         "https://fldemo.fivelumenstest.com/api/signup",
@@ -45,7 +43,6 @@ const SignUp = () => {
       console.log("error is ", error);
     }
   };
-
   //   const checkApi = async () => {
   //     try {
   //       const response = await fetch(
@@ -76,7 +73,6 @@ const SignUp = () => {
         <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
           Sign Up to FiveLumens
         </h2>
-
         <div className="mb-4">
           <label className="block text-gray-700 font-semibold mb-2">
             First Name
@@ -215,20 +211,20 @@ const SignUp = () => {
           type="submit"
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
         >
+          {" "}
           Sign Up
         </button>
         <div>
           <p className="font-semibold ">
             {" "}
-            Already have an Account ? go to Login Page{" "}
+            Already have an Account ? go to Login Page
           </p>
         </div>
         <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200">
-          <Link to={"/"}> Login </Link>{" "}
+          <Link to={"/"}> Login </Link>
         </button>
       </form>
     </div>
   );
 };
-
 export default SignUp;
