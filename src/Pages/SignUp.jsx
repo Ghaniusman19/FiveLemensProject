@@ -37,7 +37,7 @@ const SignUp = () => {
       if (response.ok && data.data) {
         navigate("/");
       } else {
-        console.log("signUP");
+        console.log("sign up failed", data.message);
       }
     } catch (error) {
       console.log("error is ", error);

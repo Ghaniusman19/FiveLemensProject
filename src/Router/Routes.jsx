@@ -22,7 +22,7 @@ import ForgetPassword from "../Pages/ForgetPassword";
 import { Edit } from "lucide-react";
 export const route = [
   {
-    path : "/forget-password",
+    path: "/forget-password",
     element: <ForgetPassword />,
     isPublic: true,
   },
@@ -36,7 +36,7 @@ export const route = [
     element: <SignUp />,
     isPublic: true,
   },
-   {
+  {
     path: "*",
     element: <NotFound />,
     isPublic: true,
@@ -150,7 +150,7 @@ export const route = [
     isPublic: false,
   },
   {
-    path: "/Quality/promptlibrary",
+    path: "/Quality/prompt-library",
     element: (
       <PrivateRoute>
         <PromptLibrary />

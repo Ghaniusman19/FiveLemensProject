@@ -11,7 +11,10 @@ import AddSectionModal from "../Components/ScoreCard/AddSectionModal";
 import SectionList from "../Components/ScoreCard/SectionList";
 const ScoreCardEdit = () => {
   const authToken = localStorage.getItem("token");
-
+  const [isChecked, setisChecked] = useState(false);
+  const handleCheckboxChange = (e) => {
+    setisChecked(e.target.checked);
+  };
   useEffect(() => {
     const handleAll = async () => {
       try {
@@ -322,21 +325,44 @@ const ScoreCardEdit = () => {
     );
   };
   //comments
+  const [tags, setTags] = useState([]);
+  const [inputValue, setInputValue] = useState("");
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent form submit
+      if (inputValue.trim() !== "") {
+        setTags([...tags, inputValue.trim()]);
+        setInputValue("");
+      }
+    }
+  };
 
-  // Forms configuration (different for each button)
-  // const forms = {
-  //   form1: {
-  //     title: " Add Single Select ",
-  //     fields: ["Description", "Single Select Options"],
-  //   },
-  //   form2: {
-  //     title: "Add Multi Select",
-  //     fields: ["Description", "Multi Select Option"],
-  //   },
-  //   form3: { title: "Add Small Text", fields: ["Description"] },
-  //   form4: { title: "Add Large Text", fields: ["Description"] },
-  //   form5: { title: "Add Date", fields: ["Description"] },
-  // };
+  const removeTag = (indexToRemove) => {
+    setTags(tags.filter((_, index) => index !== indexToRemove));
+  };
+  //
+  console.log(tags);
+  // console.log(secondlevelTags);
+  const [secondlevelTags, setsecondlevelTags] = useState([]);
+  const [secondlevelinputValue, setsecondlevelinputValue] = useState("");
+  const handlesecondlevelChange = (e) => {
+    setsecondlevelinputValue(e.target.value);
+  };
+  const handleSecondLevelKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent form submit
+      if (secondlevelinputValue.trim() !== "") {
+        setsecondlevelTags([...secondlevelTags, secondlevelinputValue.trim()]);
+        setsecondlevelinputValue("");
+      }
+    }
+  };
+  const removesecondlevelTag = (indexToRemove) => {
+    setsecondlevelTags(
+      secondlevelTags.filter((_, index) => index !== indexToRemove)
+    );
+  };
+
   const forms = {
     form1: {
       title: "Add Single Select",
@@ -346,7 +372,7 @@ const ScoreCardEdit = () => {
           label: "Single Select Options",
           name: "singleSelect",
           type: "select",
-          options: ["Option 1", "Option 2"],
+          // options: ["Option 1", "Option 2"],
         },
       ],
     },
@@ -385,10 +411,16 @@ const ScoreCardEdit = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch(`/api/scorecards/${id}`, {
+    // For single select, save tags in formData
+    let updatedFormData = { ...formData };
+    if (activeModal === "form1") {
+      updatedFormData.singleSelect = [...tags];
+    }
+    setTags([]); // Clear tags on submit
+    fetch(`http://localhost:5173/api/scorecards/${id}`, {
       method: "POST", // or "PUT" for editing
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(updatedFormData),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -404,7 +436,7 @@ const ScoreCardEdit = () => {
       setSections(
         sections.map((section) =>
           section.id === editingSectionId
-            ? { ...section, data: formData }
+            ? { ...section, data: updatedFormData }
             : section
         )
       );
@@ -414,7 +446,7 @@ const ScoreCardEdit = () => {
       const newSection = {
         id: Date.now(),
         title: forms[activeModal].title,
-        data: formData,
+        data: updatedFormData,
       };
       setSections([...sections, newSection]);
     }
@@ -453,6 +485,15 @@ const ScoreCardEdit = () => {
   const handleEditSection = (id) => {
     const sectionToEdit = sections.find((section) => section.id === id);
     setFormData(sectionToEdit.data);
+    // Pre-fill tags for single select
+    if (
+      sectionToEdit.title === forms.form1.title &&
+      Array.isArray(sectionToEdit.data.singleSelect)
+    ) {
+      setTags(sectionToEdit.data.singleSelect);
+    } else {
+      setTags([]);
+    }
     setActiveModal(
       Object.keys(forms).find((key) => forms[key].title === sectionToEdit.title)
     );
@@ -545,105 +586,199 @@ const ScoreCardEdit = () => {
               {/* Modal for Active Form */}
               {activeModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
-                  <div className="bg-white p-6 rounded-lg shadow-xl w-96">
+                  <div className="bg-white p-6 rounded-lg shadow-xl  w-[50%] ">
                     <h2 className="text-xl font-bold mb-4">
                       {forms[activeModal].title}
                     </h2>
                     <form onSubmit={handleSubmit}>
-                      {forms[activeModal].fields.map((field) => (
-                        <div key={field.name} className="mb-4">
-                          <label className="block text-gray-700 mb-2">
-                            {field.label}:
-                          </label>
-                          {field.type === "textarea" && (
-                            <textarea
-                              name={field.name}
-                              onChange={handleInputChange}
-                              value={formData[field.name] || ""}
-                              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              required
-                            />
-                          )}
-                          {field.type === "input" && (
-                            <input
-                              type="text"
-                              name={field.name}
-                              onChange={handleInputChange}
-                              value={formData[field.name] || ""}
-                              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              required
-                            />
-                          )}
-                          {field.type === "select" && (
-                            <select
-                              name={field.name}
-                              onChange={handleInputChange}
-                              value={formData[field.name] || ""}
-                              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              required
-                            >
-                              <option value="">Select an option</option>
-                              {field.options.map((opt) => (
-                                <option key={opt} value={opt}>
-                                  {opt}
-                                </option>
-                              ))}
-                            </select>
-                          )}
-                          {field.type === "checkbox-group" && (
-                            <div>
-                              {field.options.map((opt) => (
-                                <label key={opt} className="mr-4">
+                      <div>
+                        {forms[activeModal].fields.map((field) => (
+                          <div key={field.name} className="mb-4 ">
+                            <label className="block text-gray-700 mb-2">
+                              {field.label}:
+                            </label>
+                            {field.type === "textarea" && (
+                              <textarea
+                                name={field.name}
+                                onChange={handleInputChange}
+                                value={formData[field.name] || ""}
+                                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required
+                                placeholder="Enter single select entry description here..."
+                              />
+                            )}
+                            {field.type === "input" && (
+                              <input
+                                type="text"
+                                name={field.name}
+                                onChange={handleInputChange}
+                                value={formData[field.name] || ""}
+                                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required
+                              />
+                            )}
+                            {field.type === "select" && (
+                              <div
+                                name={field.name}
+                                onChange={handleInputChange}
+                                value={formData[field.name] || ""}
+                                className="w-full px-3 py-2 border rounded-lg focus:outline-none min-h-10 focus:ring-2 focus:ring-blue-500 "
+                                required
+                              >
+                                <div className="tags-input-container flex flex-wrap ">
+                                  {tags.map((tag, i) => (
+                                    <div
+                                      key={i}
+                                      className="tag-item border bg-green-600  border-gray-100 rounded-full px-2 mr-1 mb-1 flex items-cente "
+                                    >
+                                      <span>{tag}</span>
+                                      <span
+                                        className="close-button cursor-pointer"
+                                        onClick={() => removeTag(i)}
+                                      >
+                                        &times;
+                                      </span>
+                                    </div>
+                                  ))}
                                   <input
-                                    type="checkbox"
-                                    name={field.name}
-                                    value={opt}
-                                    data-group="checkbox-group"
-                                    checked={
-                                      Array.isArray(formData[field.name]) &&
-                                      formData[field.name].includes(opt)
+                                    type="text"
+                                    value={inputValue}
+                                    className="outline-none flex-1"
+                                    onChange={(e) =>
+                                      setInputValue(e.target.value)
                                     }
-                                    onChange={(e) => {
-                                      const checked = e.target.checked;
-                                      setFormData((prev) => {
-                                        const arr = Array.isArray(
-                                          prev[field.name]
-                                        )
-                                          ? prev[field.name]
-                                          : [];
-                                        if (checked) {
-                                          return {
-                                            ...prev,
-                                            [field.name]: [...arr, opt],
-                                          };
-                                        } else {
-                                          return {
-                                            ...prev,
-                                            [field.name]: arr.filter(
-                                              (v) => v !== opt
-                                            ),
-                                          };
-                                        }
-                                      });
-                                    }}
-                                  />{" "}
-                                  {opt}
-                                </label>
-                              ))}
-                            </div>
-                          )}
-                          {field.type === "date" && (
-                            <input
-                              type="date"
-                              name={field.name}
-                              onChange={handleInputChange}
-                              value={formData[field.name] || ""}
-                              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              required
-                            />
-                          )}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder="Add multi select options here..."
+                                  />
+                                </div>
+                                {tags.length === 0 ? (
+                                  <span className="text-red-500">required</span>
+                                ) : (
+                                  ""
+                                )}
+                              </div>
+                            )}
+
+                            {field.type === "checkbox-group" && (
+                              <div>
+                                {field.options.map((opt) => (
+                                  <label key={opt} className="mr-4">
+                                    <input
+                                      type="checkbox"
+                                      name={field.name}
+                                      value={opt}
+                                      data-group="checkbox-group"
+                                      checked={
+                                        Array.isArray(formData[field.name]) &&
+                                        formData[field.name].includes(opt)
+                                      }
+                                      onChange={(e) => {
+                                        const checked = e.target.checked;
+                                        setFormData((prev) => {
+                                          const arr = Array.isArray(
+                                            prev[field.name]
+                                          )
+                                            ? prev[field.name]
+                                            : [];
+                                          if (checked) {
+                                            return {
+                                              ...prev,
+                                              [field.name]: [...arr, opt],
+                                            };
+                                          } else {
+                                            return {
+                                              ...prev,
+                                              [field.name]: arr.filter(
+                                                (v) => v !== opt
+                                              ),
+                                            };
+                                          }
+                                        });
+                                      }}
+                                    />{" "}
+                                    {opt}
+                                  </label>
+                                ))}
+                              </div>
+                            )}
+                            {field.type === "date" && (
+                              <input
+                                type="date"
+                                name={field.name}
+                                onChange={handleInputChange}
+                                value={formData[field.name] || ""}
+                                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required
+                              />
+                            )}
+                          </div>
+                        ))}
+                        <div className="py-2 flex justify-between">
+                          <label htmlFor="sclevel">Add Second Level</label>
+                          <input
+                            type="checkbox"
+                            name="secondlevel"
+                            id="sclevel"
+                            checked={isChecked}
+                            onChange={handleCheckboxChange}
+                          />
                         </div>
-                      ))}
+                        {isChecked && (
+                          <div className="">
+                            {tags.map((tag, index) => (
+                              <div key={index} className="p-2my-2">
+                                <span className=" bg-gray-300 ">
+                                  {tag} second level
+                                </span>
+                                {/* This is where second level hirarrchy starts  */}
+                                <div className="second-level-tags flex flex-wrap border border-gray-300  rounded-2xl p-2 ">
+                                  {secondlevelTags.map((stag, i) => (
+                                    <div
+                                      key={i}
+                                      className="tag-item border bg-[#c7cbcf]  border-gray-100 rounded-full px-2 mr-1 mb-1 flex items-center "
+                                    >
+                                      <span>{stag} </span>
+                                      <span
+                                        className="close-button cursor-pointer"
+                                        onClick={() => removesecondlevelTag(i)}
+                                      >
+                                        &times;
+                                      </span>
+                                    </div>
+                                  ))}
+                                  <input
+                                    type="text"
+                                    value={secondlevelinputValue}
+                                    className="outline-none flex-1"
+                                    // id={`second-level-input-${index}`}
+                                    onChange={handlesecondlevelChange}
+                                    onKeyDown={handleSecondLevelKeyDown}
+                                    placeholder={`Add second level select options here... ${index}`}
+                                  />
+                                </div>
+                                {secondlevelTags.length === 0 ? (
+                                  <span className="text-red-500">required</span>
+                                ) : (
+                                  ""
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        <div className="py-2 flex">
+                          <input
+                            type="checkbox"
+                            className="mr-3"
+                            name=""
+                            id="metadatafield"
+                          />
+                          <label htmlFor="metadatafield">
+                            This meta data entry field is required
+                          </label>
+                        </div>
+                      </div>
+
                       <div className="flex justify-end space-x-2">
                         <button
                           type="button"

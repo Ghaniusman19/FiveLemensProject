@@ -212,7 +212,8 @@ const ScoreCardHeader = () => {
             onClose={() => setaddSectionModal(false)}
             onSubmit={handleFormSubmit}
             shouldNavigate={true}
-            title="Add Scorecard"
+            title="Scorecard Settings"
+            headerdescription="Manage scorecard settings here"
           />
         )}
 

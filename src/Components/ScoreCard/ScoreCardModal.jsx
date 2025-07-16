@@ -11,6 +11,7 @@ const ScoreCardModal = ({
   isView,
   shouldNavigate = true, // Default to true
   title = "Begin Coaching Session", // default title
+  headerdescription = "manage scorecard settings here",
 }) => {
   const [groups, setGroups] = useState([]);
   const [URL, setURL] = useState("");
@@ -70,6 +71,14 @@ const ScoreCardModal = ({
       coachingForm: "",
     }
   );
+
+  const handleSelectAllGroups = (e) => {
+    const checked = e.target.checked;
+    setFormData((prev) => ({
+      ...prev,
+      groups: checked ? groups.map((g) => g._id) : [],
+    }));
+  };
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
@@ -203,8 +212,11 @@ const ScoreCardModal = ({
       <div className="bg-white p-6 rounded-xl max-w-max mt-32">
         <div className="form-header flex justify-between">
           <div className="text">
-            <h2 className="text-xl font-semibold mb-4">{title}</h2>
-            <p>Select the criteria below to begin a coaching session</p>
+            <h2 className="text-xl font-semibold mb-2">{title}</h2>
+            <p className="text-lg font-semibold text-gray-600">
+              {" "}
+              {headerdescription}{" "}
+            </p>
           </div>
           <div className="btn bg-white p-3 items-start text-gray-900 rounded-full shadow-lg h-10">
             <Button label="&times;" onClick={onClose} />
@@ -228,6 +240,7 @@ const ScoreCardModal = ({
               onChange={handleChange}
               required
               readOnly={isView}
+              placeholder="Enter Scorecard Name here ...."
             />
           </div>
 
@@ -247,6 +260,7 @@ const ScoreCardModal = ({
               onChange={handleChange}
               required
               readOnly={isView}
+              placeholder="Enter Scorecard Description here ...."
             />
           </div>
           <div className="flex justify-between gap-2 w-full">
@@ -303,6 +317,17 @@ const ScoreCardModal = ({
 
                 {showGroupDropdown && (
                   <div className="absolute z-10 bg-white border border-gray-300 mt-1 rounded p-2 w-full max-h-48 overflow-y-auto">
+                    <label className="flex items-center space-x-2 p-1">
+                      <input
+                        type="checkbox"
+                        checked={
+                          formData.groups.length === groups.length &&
+                          groups.length > 0
+                        }
+                        onChange={handleSelectAllGroups}
+                      />
+                      <span>Select All</span>
+                    </label>
                     {groups.map((group) => (
                       <label
                         key={group._id}
@@ -413,9 +438,13 @@ const ScoreCardModal = ({
               name="visibleToManagers"
               value={formData.visibleToManagers}
               onChange={handleChange}
-              required
             />
           </div>
+          {formData.visibleToManagers === false ? (
+            <span className="text-red-600 font-normal"> this field is required</span>
+          ) : (
+            ""
+          )}
           <div className="flex justify-between gap-2 w-full">
             <label htmlFor="coachingPurposeOnly">Email Notification</label>
             <input
@@ -424,9 +453,13 @@ const ScoreCardModal = ({
               name="coachingPurposeOnly"
               value={formData.coachingPurposeOnly}
               onChange={handleChange}
-              required
             />
           </div>
+          {formData.coachingPurposeOnly === false ? (
+            <span className="text-red-600"> this field is required</span>
+          ) : (
+            ""
+          )}
           <div className="flex justify-end gap-2">
             <Button
               onClick={onClose}
@@ -439,7 +472,7 @@ const ScoreCardModal = ({
               className="bg-blue-700 text-white px-4 py-1 rounded"
               // onClick={AddData}
             >
-              {isEdit ? "Update" : "Add"}
+              {isEdit ? "Update" : "Create"}
             </button>
           </div>
         </form>
