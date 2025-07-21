@@ -1,6 +1,6 @@
-import Button from "../ButtonComponent/Button";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Button from "../Buttons/Button";
 const CoachingFormModal = ({ show, onClose, onSubmit }) => {
   const [isChecked, setIsChecked] = useState(false);
   const handleCheckboxChange = (event) => {

@@ -1,4 +1,4 @@
-import Button from "../ButtonComponent/Button";
+import Button from "../Buttons/Button";
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -441,7 +441,10 @@ const ScoreCardModal = ({
             />
           </div>
           {formData.visibleToManagers === false ? (
-            <span className="text-red-600 font-normal"> this field is required</span>
+            <span className="text-red-600 font-normal">
+              {" "}
+              this field is required
+            </span>
           ) : (
             ""
           )}

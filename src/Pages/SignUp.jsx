@@ -60,12 +60,6 @@ const SignUp = () => {
   //   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300">
-      {/* <button
-        onClick={checkApi}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
-      >
-        check Sign up
-      </button> */}
       <form
         onSubmit={handleSignUp}
         className="bg-white shadow-lg rounded-xl px-10 py-8 w-full max-w-md"

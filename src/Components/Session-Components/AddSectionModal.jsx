@@ -1,4 +1,4 @@
-import Button from "../ButtonComponent/Button";
+import Button from "../Buttons/Button";
 import { useState, useRef } from "react";
 const AddSectionModal = ({ show, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({

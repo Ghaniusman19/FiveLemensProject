@@ -1,20 +1,19 @@
-import Container from "../Components/Container";
 import { useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import ScoreCardModal from "../Components/ScoreCard/ScoreCardModal";
 import { Settings } from "lucide-react";
 import { useState, useEffect } from "react";
-import EditCriteriaModal from "../Components/ScoreCard/EditCriteriaModal";
-import EditSectionModal from "../Components/ScoreCard/EditSectionModal";
-import AddCriteriaModal from "../Components/ScoreCard/AddCriteriaModal";
-import AddSectionModal from "../Components/ScoreCard/AddSectionModal";
-import SectionList from "../Components/ScoreCard/SectionList";
+import Components from "../Constants/index.js";
+const {
+  EditSectionModal,
+  AddCriteriaModal,
+  AddSectionModal,
+  SectionList,
+  Container,
+  ScoreCardModal,
+  EditCriteriaModal,
+} = Components;
+import { forms, authToken } from "../Constants/constants.js";
 const ScoreCardEdit = () => {
-  const authToken = localStorage.getItem("token");
-  const [isChecked, setisChecked] = useState(false);
-  const handleCheckboxChange = (e) => {
-    setisChecked(e.target.checked);
-  };
   useEffect(() => {
     const handleAll = async () => {
       try {
@@ -56,7 +55,6 @@ const ScoreCardEdit = () => {
       }
     };
     handleActive();
-
     const handleScoreCardEdit = async () => {
       try {
         const response = fetch(
@@ -107,7 +105,7 @@ const ScoreCardEdit = () => {
             "Content-Type": "application/json",
             authorization: authToken,
           },
-          body: JSON.stringify(), // or use id if available
+          body: JSON.stringify(), 
         }
       );
 
@@ -125,7 +123,6 @@ const ScoreCardEdit = () => {
   const [formData, setFormData] = useState({});
   const [sections, setSections] = useState([]);
   const [editingSectionId, setEditingSectionId] = useState(null);
-  // drag and drop
   const handleMetaDragStart = (e, index) => {
     e.dataTransfer.setData("itemIndex", index);
   };
@@ -136,18 +133,16 @@ const ScoreCardEdit = () => {
     const updatedItems = [...sections];
     const [draggedItem] = updatedItems.splice(draggedIndex, 1);
     updatedItems.splice(dropIndex, 0, draggedItem);
+    bs;
     setSections(updatedItems);
   };
-  //
   const handleDragStart = (e, index) => {
     e.dataTransfer.setData("itemIndex", index);
   };
-
   const handleDrop = (e, dropIndex) => {
     e.preventDefault();
     const draggedIndex = parseInt(e.dataTransfer.getData("itemIndex"), 10);
     if (draggedIndex === dropIndex) return;
-
     const updatedItems = [...section1];
     const [draggedItem] = updatedItems.splice(draggedIndex, 1);
     updatedItems.splice(dropIndex, 0, draggedItem);
@@ -234,7 +229,6 @@ const ScoreCardEdit = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showAddMenu]);
-
   const handleAddSection = (sectionName) => {
     const newSection = {
       id: Date.now().toString(),
@@ -254,7 +248,6 @@ const ScoreCardEdit = () => {
     setSections1([...otherSections, newSection, totalPointsSection]);
     setShowAddSectionModal(false);
   };
-
   const handleEditSection1 = (id, newName) => {
     setSections1(
       section1.map((section) =>
@@ -263,7 +256,6 @@ const ScoreCardEdit = () => {
     );
     setShowEditSectionModal(false);
   };
-
   const handleDeleteSection1 = (id) => {
     // Don't allow deletion of Total Possible Points section
     //yaani jo last wala total score card wala section hai wo kabhi delete na ho...
@@ -326,85 +318,18 @@ const ScoreCardEdit = () => {
   };
   //comments
   const [tags, setTags] = useState([]);
-  const [inputValue, setInputValue] = useState("");
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault(); // Prevent form submit
-      if (inputValue.trim() !== "") {
-        setTags([...tags, inputValue.trim()]);
-        setInputValue("");
-      }
-    }
-  };
-
   const removeTag = (indexToRemove) => {
-    setTags(tags.filter((_, index) => index !== indexToRemove));
-  };
-  //
-  console.log(tags);
-  // console.log(secondlevelTags);
-  const [secondlevelTags, setsecondlevelTags] = useState([]);
-  const [secondlevelinputValue, setsecondlevelinputValue] = useState("");
-  const handlesecondlevelChange = (e) => {
-    setsecondlevelinputValue(e.target.value);
-  };
-  const handleSecondLevelKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault(); // Prevent form submit
-      if (secondlevelinputValue.trim() !== "") {
-        setsecondlevelTags([...secondlevelTags, secondlevelinputValue.trim()]);
-        setsecondlevelinputValue("");
-      }
-    }
-  };
-  const removesecondlevelTag = (indexToRemove) => {
-    setsecondlevelTags(
-      secondlevelTags.filter((_, index) => index !== indexToRemove)
+    setFirstLevelTags(
+      firstLevelTags.filter((_, index) => index !== indexToRemove)
     );
   };
-
-  const forms = {
-    form1: {
-      title: "Add Single Select",
-      fields: [
-        { label: "Description", name: "description", type: "textarea" },
-        {
-          label: "Single Select Options",
-          name: "singleSelect",
-          type: "select",
-          // options: ["Option 1", "Option 2"],
-        },
-      ],
-    },
-    form2: {
-      title: "Add Multi Select",
-      fields: [
-        { label: "Description", name: "description", type: "textarea" },
-        {
-          label: "Multi Select Option",
-          name: "multiSelect",
-          type: "checkbox-group",
-          options: ["Option 1", "Option 2"],
-        },
-      ],
-    },
-    form3: {
-      title: "Add Small Text",
-      fields: [{ label: "Description", name: "description", type: "input" }],
-    },
-    form4: {
-      title: "Add Large Text",
-      fields: [{ label: "Description", name: "description", type: "textarea" }],
-    },
-    form5: {
-      title: "Add Date",
-      fields: [
-        { label: "Description", name: "description", type: "textarea" },
-        { label: "Date", name: "date", type: "date" },
-      ],
-    },
+  const removesecondlevelTag = (firstIndex, secondIndex) => {
+    const updated = [...secondLevelTags];
+    updated[firstIndex] = updated[firstIndex].filter(
+      (_, i) => i !== secondIndex
+    );
+    setSecondLevelTags(updated);
   };
-
   const handleButtonClick = (formKey) => {
     setIsDropdownOpen(false); // Close dropdown
     setActiveModal(formKey); // Open specific modal
@@ -412,6 +337,19 @@ const ScoreCardEdit = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // For single select, save tags in formData
+    const structuredData = {
+      description: formData.description,
+      firstLevel: firstLevelTags.map((firstTag, i) => ({
+        value: firstTag,
+        secondLevel: secondLevelTags[i].map((secondTag, j) => ({
+          value: secondTag,
+          thirdLevel: thirdLevelTags[i]?.[j] || [],
+        })),
+      })),
+    };
+    localStorage.setItem("scorecardData", JSON.stringify(structuredData));
+    console.log("structured data of form 1 is", structuredData);
+
     let updatedFormData = { ...formData };
     if (activeModal === "form1") {
       updatedFormData.singleSelect = [...tags];
@@ -477,6 +415,7 @@ const ScoreCardEdit = () => {
     // For all other input types
     else {
       setFormData({ ...formData, [name]: value });
+      console.log(formData);
     }
   };
   const handleDeleteSection = (id) => {
@@ -498,6 +437,79 @@ const ScoreCardEdit = () => {
       Object.keys(forms).find((key) => forms[key].title === sectionToEdit.title)
     );
     setEditingSectionId(id); // Track which section is being edited
+  };
+  ///////////functionality of nested
+  //ye saari states or code is liye hai taake nested tags kaam karein
+  const [firstLevelInput, setFirstLevelInput] = useState("");
+  const [firstLevelTags, setFirstLevelTags] = useState([]);
+  const [enableSecondLevel, setEnableSecondLevel] = useState(false);
+  const [secondLevelTags, setSecondLevelTags] = useState([]);
+  const [secondLevelInputs, setSecondLevelInputs] = useState([]);
+  const [thirdLevelCheckboxes, setThirdLevelCheckboxes] = useState([]);
+  const [thirdLevelTags, setThirdLevelTags] = useState([]);
+  const [thirdLevelInputs, setThirdLevelInputs] = useState([]);
+  //  second level arrays when first level tags change
+  useEffect(() => {
+    setSecondLevelTags(firstLevelTags.map(() => []));
+    setSecondLevelInputs(firstLevelTags.map(() => ""));
+    setThirdLevelCheckboxes(firstLevelTags.map(() => false));
+    setThirdLevelTags(firstLevelTags.map(() => []));
+    setThirdLevelInputs(firstLevelTags.map(() => []));
+  }, [firstLevelTags]);
+
+  const handleFirstLevelKeyDown = (e) => {
+    if (e.key === "Enter" && firstLevelInput.trim()) {
+      e.preventDefault();
+      setFirstLevelTags([...firstLevelTags, firstLevelInput.trim()]);
+      setFirstLevelInput("");
+    }
+  };
+  const handleSecondLevelKeyDown = (e, index) => {
+    if (e.key === "Enter" && secondLevelInputs[index].trim()) {
+      e.preventDefault();
+      const newTags = [...secondLevelTags];
+      newTags[index].push(secondLevelInputs[index].trim());
+      setSecondLevelTags(newTags);
+
+      const newInputs = [...secondLevelInputs];
+      newInputs[index] = "";
+      setSecondLevelInputs(newInputs);
+
+      // Reset third level inputs for this second-level tag group
+      const newThirdLevelInputs = [...thirdLevelInputs];
+      newThirdLevelInputs[index].push("");
+      setThirdLevelInputs(newThirdLevelInputs);
+
+      const newThirdLevelTags = [...thirdLevelTags];
+      newThirdLevelTags[index].push([]);
+      setThirdLevelTags(newThirdLevelTags);
+    }
+  };
+  const handleThirdLevelKeyDown = (e, firstIndex, secondIndex) => {
+    if (e.key === "Enter" && thirdLevelInputs[firstIndex][secondIndex].trim()) {
+      e.preventDefault();
+      const tagsCopy = [...thirdLevelTags];
+      tagsCopy[firstIndex][secondIndex].push(
+        thirdLevelInputs[firstIndex][secondIndex].trim()
+      );
+      setThirdLevelTags(tagsCopy);
+
+      const inputsCopy = [...thirdLevelInputs];
+      inputsCopy[firstIndex][secondIndex] = "";
+      setThirdLevelInputs(inputsCopy);
+    }
+  };
+  // Remove third-level tag
+  const removeThirdLevelTag = (firstIndex, secondIndex, thirdIndex) => {
+    const tagsCopy = [...thirdLevelTags];
+    tagsCopy[firstIndex][secondIndex] = tagsCopy[firstIndex][
+      secondIndex
+    ].filter((_, i) => i !== thirdIndex);
+    setThirdLevelTags(tagsCopy);
+  };
+  const handleFormCancel = () => {
+    setActiveModal(null);
+    setFormData("");
   };
   return (
     <div>
@@ -586,7 +598,7 @@ const ScoreCardEdit = () => {
               {/* Modal for Active Form */}
               {activeModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
-                  <div className="bg-white p-6 rounded-lg shadow-xl  w-[50%] ">
+                  <div className="bg-white p-6 rounded-lg shadow-xl  w-[50%]  modal-scrollable ">
                     <h2 className="text-xl font-bold mb-4">
                       {forms[activeModal].title}
                     </h2>
@@ -626,32 +638,33 @@ const ScoreCardEdit = () => {
                                 required
                               >
                                 <div className="tags-input-container flex flex-wrap ">
-                                  {tags.map((tag, i) => (
-                                    <div
+                                  {firstLevelTags.map((tag, i) => (
+                                    <span
                                       key={i}
-                                      className="tag-item border bg-green-600  border-gray-100 rounded-full px-2 mr-1 mb-1 flex items-cente "
+                                      className="bg-blue-200 px-3 py-1 rounded-full"
                                     >
-                                      <span>{tag}</span>
+                                      {tag}
                                       <span
-                                        className="close-button cursor-pointer"
                                         onClick={() => removeTag(i)}
+                                        className="close-button cursor-pointer
+                                          ml-2"
                                       >
                                         &times;
                                       </span>
-                                    </div>
+                                    </span>
                                   ))}
                                   <input
                                     type="text"
-                                    value={inputValue}
-                                    className="outline-none flex-1"
+                                    value={firstLevelInput}
                                     onChange={(e) =>
-                                      setInputValue(e.target.value)
+                                      setFirstLevelInput(e.target.value)
                                     }
-                                    onKeyDown={handleKeyDown}
-                                    placeholder="Add multi select options here..."
+                                    onKeyDown={handleFirstLevelKeyDown}
+                                    placeholder="Type & press Enter"
+                                    className="border px-2 py-1 rounded"
                                   />
                                 </div>
-                                {tags.length === 0 ? (
+                                {firstLevelTags.length === 0 ? (
                                   <span className="text-red-500">required</span>
                                 ) : (
                                   ""
@@ -695,7 +708,7 @@ const ScoreCardEdit = () => {
                                           }
                                         });
                                       }}
-                                    />{" "}
+                                    />
                                     {opt}
                                   </label>
                                 ))}
@@ -714,57 +727,135 @@ const ScoreCardEdit = () => {
                           </div>
                         ))}
                         <div className="py-2 flex justify-between">
-                          <label htmlFor="sclevel">Add Second Level</label>
+                          <label>Add Second Level</label>
                           <input
                             type="checkbox"
-                            name="secondlevel"
-                            id="sclevel"
-                            checked={isChecked}
-                            onChange={handleCheckboxChange}
+                            checked={enableSecondLevel}
+                            onChange={(e) =>
+                              setEnableSecondLevel(e.target.checked)
+                            }
                           />
                         </div>
-                        {isChecked && (
-                          <div className="">
-                            {tags.map((tag, index) => (
-                              <div key={index} className="p-2my-2">
-                                <span className=" bg-gray-300 ">
-                                  {tag} second level
-                                </span>
-                                {/* This is where second level hirarrchy starts  */}
-                                <div className="second-level-tags flex flex-wrap border border-gray-300  rounded-2xl p-2 ">
-                                  {secondlevelTags.map((stag, i) => (
-                                    <div
-                                      key={i}
-                                      className="tag-item border bg-[#c7cbcf]  border-gray-100 rounded-full px-2 mr-1 mb-1 flex items-center "
-                                    >
-                                      <span>{stag} </span>
+
+                        <div className="">
+                          {enableSecondLevel && (
+                            <div className="space-y-4">
+                              {firstLevelTags.map((tag, i) => (
+                                <div key={i} className="border p-3 rounded-md">
+                                  <p className="font-medium mb-2">
+                                    {tag} - Second Level
+                                  </p>
+                                  <div className="flex flex-wrap gap-2 mb-2">
+                                    {secondLevelTags[i]?.map((stag, j) => (
                                       <span
-                                        className="close-button cursor-pointer"
-                                        onClick={() => removesecondlevelTag(i)}
+                                        key={j}
+                                        className="bg-green-200 px-3 py-1 rounded-full"
                                       >
-                                        &times;
+                                        {stag}
+                                        <span
+                                          className="close-button cursor-pointer"
+                                          onClick={() =>
+                                            removesecondlevelTag(i, j)
+                                          }
+                                        >
+                                          &times;
+                                        </span>
                                       </span>
+                                    ))}
+                                    <input
+                                      type="text"
+                                      value={secondLevelInputs[i] || ""}
+                                      onChange={(e) => {
+                                        const newInputs = [
+                                          ...secondLevelInputs,
+                                        ];
+                                        newInputs[i] = e.target.value;
+                                        setSecondLevelInputs(newInputs);
+                                      }}
+                                      onKeyDown={(e) =>
+                                        handleSecondLevelKeyDown(e, i)
+                                      }
+                                      placeholder="Add second-level tag"
+                                      className="border px-2 py-1 rounded"
+                                    />
+                                  </div>
+
+                                  <div className="flex items-center gap-2">
+                                    <label>Add Third Level</label>
+                                    <input
+                                      type="checkbox"
+                                      checked={thirdLevelCheckboxes[i] || false}
+                                      onChange={(e) => {
+                                        const updated = [
+                                          ...thirdLevelCheckboxes,
+                                        ];
+                                        updated[i] = e.target.checked;
+                                        setThirdLevelCheckboxes(updated);
+                                      }}
+                                    />
+                                  </div>
+
+                                  {thirdLevelCheckboxes[i] && (
+                                    <div className="mt-3 space-y-4">
+                                      {secondLevelTags[i].map((stag, j) => (
+                                        <div key={j}>
+                                          <p className="text-sm font-semibold">
+                                            {stag} - Third Level
+                                          </p>
+                                          <div className="flex flex-wrap gap-2">
+                                            {thirdLevelTags[i]?.[j]?.map(
+                                              (ttag, k) => (
+                                                <span
+                                                  key={k}
+                                                  className="bg-yellow-200 px-3 py-1 rounded-full flex items-center"
+                                                >
+                                                  {ttag}
+                                                  <span
+                                                    className="close-button cursor-pointer ml-2"
+                                                    onClick={() =>
+                                                      removeThirdLevelTag(
+                                                        i,
+                                                        j,
+                                                        k
+                                                      )
+                                                    }
+                                                  >
+                                                    &times;
+                                                  </span>
+                                                </span>
+                                              )
+                                            )}
+                                            <input
+                                              type="text"
+                                              value={
+                                                thirdLevelInputs[i]?.[j] || ""
+                                              }
+                                              onChange={(e) => {
+                                                const inputsCopy = [
+                                                  ...thirdLevelInputs,
+                                                ];
+                                                if (!inputsCopy[i])
+                                                  inputsCopy[i] = [];
+                                                inputsCopy[i][j] =
+                                                  e.target.value;
+                                                setThirdLevelInputs(inputsCopy);
+                                              }}
+                                              onKeyDown={(e) =>
+                                                handleThirdLevelKeyDown(e, i, j)
+                                              }
+                                              placeholder="Add third-level tag"
+                                              className="border px-2 py-1 rounded"
+                                            />
+                                          </div>
+                                        </div>
+                                      ))}
                                     </div>
-                                  ))}
-                                  <input
-                                    type="text"
-                                    value={secondlevelinputValue}
-                                    className="outline-none flex-1"
-                                    // id={`second-level-input-${index}`}
-                                    onChange={handlesecondlevelChange}
-                                    onKeyDown={handleSecondLevelKeyDown}
-                                    placeholder={`Add second level select options here... ${index}`}
-                                  />
+                                  )}
                                 </div>
-                                {secondlevelTags.length === 0 ? (
-                                  <span className="text-red-500">required</span>
-                                ) : (
-                                  ""
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                              ))}
+                            </div>
+                          )}
+                        </div>
 
                         <div className="py-2 flex">
                           <input
@@ -782,7 +873,7 @@ const ScoreCardEdit = () => {
                       <div className="flex justify-end space-x-2">
                         <button
                           type="button"
-                          onClick={() => setActiveModal(null)}
+                          onClick={handleFormCancel}
                           className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
                         >
                           Cancel
@@ -823,8 +914,6 @@ const ScoreCardEdit = () => {
                             {section.data.description}
                           </p>
                         )}
-                        {/* :{" "}
-                        {Object.values(section.data).join(", ")} */}
                       </h3>
 
                       <div className="relative">
